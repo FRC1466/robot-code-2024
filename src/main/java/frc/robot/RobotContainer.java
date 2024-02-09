@@ -20,8 +20,13 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
+import frc.robot.subsystems.Manipulator.EndEffector;
+import frc.robot.subsystems.Manipulator.Indexer;
+import frc.robot.subsystems.Manipulator.Intake;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
+
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -34,9 +39,14 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve"));
+                                                                        
+  private final EndEffector outTake = new EndEffector();
+  private final Intake intake = new Intake();   
+  private final Indexer index = new Indexer();                                                             
   // CommandJoystick rotationController = new CommandJoystick(1);
   // Replace with CommandPS4Controller or CommandJoystick if needed
   CommandJoystick driverController = new CommandJoystick(1);
+
 
   // CommandJoystick driverController   = new CommandJoystick(3);//(OperatorConstants.DRIVER_CONTROLLER_PORT);
 
@@ -48,18 +58,6 @@ public class RobotContainer
   {
     // Configure the trigger bindings
     configureBindings();
-
-  /*   AbsoluteDriveAdv closedAbsoluteDriveAdv = new AbsoluteDriveAdv(drivebase,
-                                                                   () -> MathUtil.applyDeadband(driverXbox.getLeftY(),
-                                                                                                OperatorConstants.LEFT_Y_DEADBAND),
-                                                                   () -> MathUtil.applyDeadband(driverXbox.getLeftX(),
-                                                                                                OperatorConstants.LEFT_X_DEADBAND),
-                                                                   () -> MathUtil.applyDeadband(driverXbox.getRightX(),
-                                                                                                OperatorConstants.RIGHT_X_DEADBAND),
-                                                                   driverXbox::getYButtonPressed,
-                                                                   driverXbox::getAButtonPressed,
-                                                                   driverXbox::getXButtonPressed,
-                                                                   driverXbox::getBButtonPressed);*/
 
     // Applies deadbands and inverts controls because joysticks
     // are back-right positive while robot
@@ -94,11 +92,36 @@ public class RobotContainer
   {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
-    driverController.button(1).onTrue((new InstantCommand(drivebase::zeroGyro)));
-    driverController.button(2).onTrue(new InstantCommand(drivebase::addFakeVisionReading));
+    driverController.povDown().onTrue(Commands.runOnce(drivebase::zeroGyro));
+    
+    driverController.button(1).whileTrue(index.launch()).onFalse(index.stop());
+    driverController.button(1).whileTrue(outTake.shoot()).onFalse(outTake.stop());
+    //driverController.button(1).onTrue(outTake.shoot()).onFalse(outTake.stop());
+    //intake
+    // 
+    driverController.button(2).whileTrue(intake.intake()).onFalse(intake.stop());
+     driverController.button(2).whileTrue(index.outtake()).onFalse(index.stop());
+
+
+      driverController.button(4).onTrue(outTake.ampShoot()).onFalse(outTake.stop());
+
+    driverController.button(7).onTrue(outTake.drop()).onFalse(outTake.stop());
+    //driverController.button(8).onTrue(index.launch()).onFalse(index.stop());
+    driverController.button(9).onTrue(index.drop()).onFalse(index.stop());
+    driverController.button(10).onTrue(index.stop());
+    driverController.button(13).onTrue(intake.stop());
+    driverController.button(12).onTrue(intake.intake()).onFalse(intake.stop());
+    driverController.button(11).onTrue(intake.reverseIntake()).onFalse(intake.stop());
+    
  
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }
+
+  public Command getAutonomousCommand(){
+
+    return new PathPlannerAuto("Full Test Path Auto");
+  }
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -107,13 +130,11 @@ public class RobotContainer
    */
 
 
-  public void setDriveMode()
-  {
-    //drivebase.setDefaultCommand();
-  }
+
 
   public void setMotorBrake(boolean brake)
   {
     drivebase.setMotorBrake(brake);
   }
+
 }

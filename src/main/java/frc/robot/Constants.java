@@ -49,4 +49,8 @@ public final class Constants
     public static final double RIGHT_X_DEADBAND = 0.1;
     public static final double TURN_CONSTANT    = 6;
   }
+  public static class Outtake{
+    public static final int SHOOTER_ID_LEFT = 14;
+    public static final int SHOOTER_ID_RIGHT = 15;
+  }
 }

@@ -13,47 +13,40 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Outtake;
 
-public class EndEffector extends SubsystemBase {
-  private final TalonFX shooterMotorLeft;
-  private final TalonFX shooterMotorRight;
+public class Intake extends SubsystemBase {
+  private final TalonFX intakeMotor;
   private final LinearFilter currentFilter = LinearFilter.movingAverage(10);
-  private double filteredCurrentLeft;
-  public double filteredCurrentRight;
+  private double filteredCurrent;
 
 
 
   /** Create a new Gripper subsystem. */
- public EndEffector() {
-    shooterMotorLeft = new TalonFX(Outtake.SHOOTER_ID_LEFT, "rio");
-    shooterMotorRight = new TalonFX(Outtake.SHOOTER_ID_RIGHT);
+ public Intake() {
+    intakeMotor = new TalonFX(16);
 
   }
 
   public void setVoltage(double outputVoltage){
-   shooterMotorLeft.setVoltage(outputVoltage);
-   shooterMotorRight.setVoltage(outputVoltage);
+   intakeMotor.setVoltage(outputVoltage);
   }
   public Command stop() {
     return runOnce(() -> setVoltage(0)); 
   }
-  public Command drop() {
+  public Command reverseIntake() {
     return runOnce(() -> setVoltage(1));
   }
 
-  public Command shoot() {
-    return runOnce(() -> setVoltage(-10));
+  public Command intake() {
+    return runOnce(() -> setVoltage(-4));
   }
 
-  public Command ampShoot() {
-    return runOnce (() -> setVoltage(-2));
-  }
 
-  public double getCurrent(TalonFX shooterMotor) {
-    return (shooterMotor.getSupplyCurrent()).getValueAsDouble();
+
+  public double getCurrent(TalonFX intakeMotor) {
+    return (intakeMotor.getSupplyCurrent()).getValueAsDouble();
   }
   public void periodic() {
-    filteredCurrentLeft = currentFilter.calculate(getCurrent(shooterMotorLeft));
-    filteredCurrentRight = currentFilter.calculate(getCurrent(shooterMotorRight));
+    filteredCurrent = currentFilter.calculate(getCurrent(intakeMotor));
   }
 
 } 
