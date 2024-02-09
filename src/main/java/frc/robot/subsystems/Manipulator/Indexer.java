@@ -6,12 +6,16 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.IndexerConstants;
 
 public class Indexer extends SubsystemBase {
   private final CANSparkMax indexMotorLeft;
   private final CANSparkMax indexMotorRight;
+  private final DigitalInput indexBeamBreak;
   private final LinearFilter currentFilter = LinearFilter.movingAverage(10);
   private double filteredCurrentLeft;
   private double filteredCurrentRight;
@@ -20,7 +24,7 @@ public class Indexer extends SubsystemBase {
   public Indexer() {
     indexMotorLeft = new CANSparkMax(17, MotorType.kBrushless);
     indexMotorRight = new CANSparkMax(18, MotorType.kBrushless);
-
+    indexBeamBreak = new DigitalInput(IndexerConstants.IndexerBeamBreak);
     indexMotorLeft.enableVoltageCompensation(12.0);
     indexMotorLeft.setSmartCurrentLimit(25);
     indexMotorLeft.burnFlash();
@@ -36,6 +40,9 @@ public class Indexer extends SubsystemBase {
 
   public Command stop() {
     return runOnce(() -> setRollers(0));
+  }
+  public boolean getIndexerBeamBreak() {
+    return indexBeamBreak.get();
   }
 
 
@@ -72,5 +79,6 @@ public double getCurrentRight() {
   public void periodic() {
     filteredCurrentLeft = currentFilter.calculate(getCurrentLeft());
     filteredCurrentRight = currentFilter.calculate(getCurrentRight());
+    SmartDashboard.putBoolean("Indexer Beam Break", indexBeamBreak.get());
   }
 }

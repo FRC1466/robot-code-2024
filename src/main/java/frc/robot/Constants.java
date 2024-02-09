@@ -4,10 +4,18 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.sensors.SensorInitializationStrategy;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.subsystems.Manipulator.Dragonhead;
 import swervelib.math.Matter;
 import swervelib.parser.PIDFConfig;
+import webblib.util.Gains;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean constants. This
@@ -23,6 +31,8 @@ public final class Constants
   public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
   public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
   public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag
+  public static final double ARM_LENGTH = 0.58;
+  public static final Translation3d INITIAL_ARM_MOUNT = new Translation3d(0.3, 0, 0.7);
 
   public static final class Auton
   {
@@ -33,6 +43,41 @@ public final class Constants
     public static final double MAX_ACCELERATION = 2;
   }
 
+  public static final class IndexerConstants{
+
+    public static final int IndexerBeamBreak = 0;
+  }
+  public static final class DragonheadConstants{
+      public static final int armPort = 19,
+      dutyCyclePort = 1;
+      public static final Gains dragonPosition = new Gains(.2,0.00,0.0,0,0,.2);
+      public static final double restRadians = Math.PI/12;
+      public static final double ampRadians = Math.PI/2;
+      public static final double podiumRadians = Math.PI/2;
+      public static final double gravityFF = 0.02;
+      public static final double absolutePositionOffset = 3.661;
+      public static final boolean encoderInverted = false;
+      public static final double dutyCycleResolution = 1.0;
+      public static final class DragonConfig {
+      public static final CurrentLimitsConfigs supplyCurrent;
+
+      public static final TalonFXConfiguration motorConfig;
+
+      static {
+        supplyCurrent = new CurrentLimitsConfigs();
+    
+    
+
+        motorConfig = new TalonFXConfiguration();
+        motorConfig.CurrentLimits = supplyCurrent;
+
+    
+      }
+      
+    }
+      
+  }
+  
   public static final class Drivebase
   {
 
@@ -54,3 +99,4 @@ public final class Constants
     public static final int SHOOTER_ID_RIGHT = 15;
   }
 }
+

@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
+import frc.robot.subsystems.Manipulator.Dragonhead;
 import frc.robot.subsystems.Manipulator.EndEffector;
 import frc.robot.subsystems.Manipulator.Indexer;
 import frc.robot.subsystems.Manipulator.Intake;
@@ -42,7 +43,8 @@ public class RobotContainer
                                                                         
   private final EndEffector outTake = new EndEffector();
   private final Intake intake = new Intake();   
-  private final Indexer index = new Indexer();                                                             
+  private final Indexer index = new Indexer();            
+  private final Dragonhead Fafnir = new Dragonhead();                                                 
   // CommandJoystick rotationController = new CommandJoystick(1);
   // Replace with CommandPS4Controller or CommandJoystick if needed
   CommandJoystick driverController = new CommandJoystick(1);
@@ -92,15 +94,16 @@ public class RobotContainer
   {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
+    Trigger indexBeamBreak = new Trigger(() -> index.getIndexerBeamBreak());
     driverController.povDown().onTrue(Commands.runOnce(drivebase::zeroGyro));
     
-    driverController.button(1).whileTrue(index.launch()).onFalse(index.stop());
-    driverController.button(1).whileTrue(outTake.shoot()).onFalse(outTake.stop());
+    driverController.button(1).whileTrue(index.launch().alongWith(outTake.shoot())).onFalse(index.stop().alongWith(outTake.stop()));
+    
     //driverController.button(1).onTrue(outTake.shoot()).onFalse(outTake.stop());
     //intake
     // 
-    driverController.button(2).whileTrue(intake.intake()).onFalse(intake.stop());
-     driverController.button(2).whileTrue(index.outtake()).onFalse(index.stop());
+    driverController.button(2).and(indexBeamBreak).whileTrue(intake.intake().alongWith(index.outtake())).onFalse(intake.stop().alongWith(index.stop()));
+
 
 
       driverController.button(4).onTrue(outTake.ampShoot()).onFalse(outTake.stop());
@@ -112,6 +115,8 @@ public class RobotContainer
     driverController.button(13).onTrue(intake.stop());
     driverController.button(12).onTrue(intake.intake()).onFalse(intake.stop());
     driverController.button(11).onTrue(intake.reverseIntake()).onFalse(intake.stop());
+    driverController.button(14).onTrue(Fafnir.podium()).onFalse(Fafnir.store());
+    driverController.button(15).onTrue(Fafnir.amp()).onFalse(Fafnir.store());
     
  
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
