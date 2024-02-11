@@ -50,10 +50,11 @@ public final class Constants
   public static final class DragonheadConstants{
       public static final int armPort = 19,
       dutyCyclePort = 1;
-      public static final Gains dragonPosition = new Gains(.2,0.00,0.0,0,0,.2);
-      public static final double restRadians = Math.PI/12;
-      public static final double ampRadians = Math.PI/2;
-      public static final double podiumRadians = Math.PI/2;
+      public static final Gains dragonPosition = new Gains(.47,0.006,0.0025,0,0,.77);
+      public static final double restRadians = Math.PI/24;
+      public static final double ampRadians = 2*Math.PI/3;
+      public static final double maxRadians = 3*Math.PI/4;
+      public static final double podiumRadians = Math.PI/8;
       public static final double gravityFF = 0.02;
       public static final double absolutePositionOffset = 3.661;
       public static final boolean encoderInverted = false;

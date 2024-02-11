@@ -3,12 +3,15 @@ package frc.robot.subsystems.Manipulator;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.networktables.NetworkTableInstance.NetworkMode;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -45,7 +48,7 @@ public class Dragonhead extends SubsystemBase{
             DragonheadConstants.dragonPosition.P,DragonheadConstants.dragonPosition.I, DragonheadConstants.dragonPosition.D);
     armPID.setAvoidanceRange(
         Rotation2d.fromRadians(DragonheadConstants.restRadians),
-        Rotation2d.fromRadians(DragonheadConstants.ampRadians));
+        Rotation2d.fromRadians(DragonheadConstants.maxRadians));
     armPID.setTolerance(0.15);
 
   /*   if (Robot.isSimulation()) {
@@ -55,8 +58,11 @@ public class Dragonhead extends SubsystemBase{
 
   setGoal(Rotation2d.fromRadians(DragonheadConstants.restRadians));
   setDefaultCommand(hold());
+  //armMotor.setNeuMode(NeutralModeValue.Brake);
   }
-
+  public Command setArmP(double p){
+    return runOnce(() ->armPID.setP(p));
+  }
   @Override
   public void simulationPeriodic() {
     //sim.update(armMotor.get());
@@ -184,6 +190,7 @@ public class Dragonhead extends SubsystemBase{
         Constants.INITIAL_ARM_MOUNT.plus(
             new Translation3d(-rotatedRest.getX(), 0, rotatedRest.getY()));
   }
+
 
   @Override
   public void periodic() {

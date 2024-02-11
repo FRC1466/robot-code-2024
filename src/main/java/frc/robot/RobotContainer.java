@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.DragonheadConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.Manipulator.Dragonhead;
@@ -75,7 +76,7 @@ public class RobotContainer
     Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
         () -> MathUtil.applyDeadband(driverController.getY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(driverController.getX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> MathUtil.applyDeadband(driverController.getZ()*.8, .1));
+        () -> MathUtil.applyDeadband(driverController.getZ()*.8, .1)).withName("Default Drive Command");
 
 
 
@@ -115,8 +116,9 @@ public class RobotContainer
     driverController.button(13).onTrue(intake.stop());
     driverController.button(12).onTrue(intake.intake()).onFalse(intake.stop());
     driverController.button(11).onTrue(intake.reverseIntake()).onFalse(intake.stop());
-    driverController.button(14).onTrue(Fafnir.podium()).onFalse(Fafnir.store());
-    driverController.button(15).onTrue(Fafnir.amp()).onFalse(Fafnir.store());
+    driverController.button(14).onTrue(Fafnir.podium()).onFalse(Fafnir.setArmP(.2).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)));
+    driverController.button(15).onTrue(Fafnir.amp()).onFalse(Fafnir.setArmP(.2).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)));
+
     
  
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
