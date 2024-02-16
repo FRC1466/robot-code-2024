@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DragonheadConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AutoMap;
+import frc.robot.commands.SuperStructure;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.Manipulator.Dragonhead;
 import frc.robot.subsystems.Manipulator.EndEffector;
@@ -44,8 +46,12 @@ public class RobotContainer
                                                                         
   private final EndEffector outTake = new EndEffector();
   private final Intake intake = new Intake();   
-  private final Indexer index = new Indexer();            
-  private final Dragonhead Fafnir = new Dragonhead();                                                 
+  private final Indexer index = new Indexer();  
+  /*   private final Dragonhead Fafnir = new Dragonhead();  
+  private final SuperStructure superstructure = new SuperStructure(outTake, Fafnir, intake, index);
+  private final AutoMap autoMap = new AutoMap(superstructure, outTake, Fafnir);
+*/
+                                               
   // CommandJoystick rotationController = new CommandJoystick(1);
   // Replace with CommandPS4Controller or CommandJoystick if needed
   CommandJoystick driverController = new CommandJoystick(1);
@@ -98,7 +104,7 @@ public class RobotContainer
     Trigger indexBeamBreak = new Trigger(() -> index.getIndexerBeamBreak());
     driverController.povDown().onTrue(Commands.runOnce(drivebase::zeroGyro));
     
-    driverController.button(1).whileTrue(index.launch().alongWith(outTake.shoot())).onFalse(index.stop().alongWith(outTake.stop()));
+    driverController.button(1).whileTrue(outTake.shoot().alongWith(index.outtake())).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
     
     //driverController.button(1).onTrue(outTake.shoot()).onFalse(outTake.stop());
     //intake
@@ -116,8 +122,8 @@ public class RobotContainer
     driverController.button(13).onTrue(intake.stop());
     driverController.button(12).onTrue(intake.intake()).onFalse(intake.stop());
     driverController.button(11).onTrue(intake.reverseIntake()).onFalse(intake.stop());
-    driverController.button(14).onTrue(Fafnir.podium()).onFalse(Fafnir.setArmP(.2).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)));
-    driverController.button(15).onTrue(Fafnir.amp()).onFalse(Fafnir.setArmP(.2).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)));
+    //driverController.button(14).onTrue(Fafnir.podium()).onFalse(Fafnir.setArmP(.2).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)));
+    //driverController.button(15).onTrue(Fafnir.amp()).onFalse(Fafnir.setArmP(.2).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)));
 
     
  

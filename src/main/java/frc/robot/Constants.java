@@ -4,11 +4,10 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-import com.ctre.phoenix.sensors.SensorInitializationStrategy;
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.pathplanner.lib.util.PIDConstants;
 
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
@@ -34,11 +33,11 @@ public final class Constants
   public static final double ARM_LENGTH = 0.58;
   public static final Translation3d INITIAL_ARM_MOUNT = new Translation3d(0.3, 0, 0.7);
 
-  public static final class Auton
+  public static final class AutonConstants
   {
 
-    public static final PIDFConfig TranslationPID = new PIDFConfig(0.7, 0, 0);
-    public static final PIDFConfig angleAutoPID   = new PIDFConfig(0.4, 0, 0.01);
+    public static final PIDConstants TranslationPID = new PIDConstants(0.7, 0, 0);
+    public static final PIDConstants angleAutoPID   = new PIDConstants(0.4, 0, 0.01);
 
     public static final double MAX_ACCELERATION = 2;
   }
@@ -48,15 +47,15 @@ public final class Constants
     public static final int IndexerBeamBreak = 0;
   }
   public static final class DragonheadConstants{
-      public static final int armPort = 19,
+      public static final int rightArmPort = 19, leftArmPort = 20,
       dutyCyclePort = 1;
-      public static final Gains dragonPosition = new Gains(.47,0.006,0.0025,0,0,.77);
+      public static final Gains dragonPosition = new Gains(.73,0.015,0.004,0,0,1);
       public static final double restRadians = Math.PI/24;
       public static final double ampRadians = 2*Math.PI/3;
       public static final double maxRadians = 3*Math.PI/4;
-      public static final double podiumRadians = Math.PI/8;
+      public static final double podiumRadians = Math.PI/7;
       public static final double gravityFF = 0.02;
-      public static final double absolutePositionOffset = 3.661;
+      public static final double absolutePositionOffset = -1.653;
       public static final boolean encoderInverted = false;
       public static final double dutyCycleResolution = 1.0;
       public static final class DragonConfig {
@@ -79,7 +78,7 @@ public final class Constants
       
   }
   
-  public static final class Drivebase
+  public static final class DrivebaseConstants
   {
 
     // Hold time on motor brakes when disabled

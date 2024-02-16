@@ -7,6 +7,7 @@ package frc.robot.subsystems.swervedrive;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -24,10 +25,14 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
+import frc.robot.Constants.AutonConstants;
+
 import java.io.File;
 import java.util.function.DoubleSupplier;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
+import swervelib.SwerveDriveTest;
 import swervelib.math.SwerveMath;
 import swervelib.parser.SwerveControllerConfiguration;
 import swervelib.parser.SwerveDriveConfiguration;
@@ -87,7 +92,7 @@ public class SwerveSubsystem extends SubsystemBase
       CANcoder absoluteEncoder = (CANcoder)m.configuration.absoluteEncoder.getAbsoluteEncoder();
     }
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
-
+    swerveDrive.setCosineCompensator(!SwerveDriveTelemetry.isSimulation);
     setupPathPlanner();
   }
 
@@ -113,7 +118,7 @@ public class SwerveSubsystem extends SubsystemBase
         this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::setChassisSpeeds, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                                         new PIDConstants(5.0, 0.0, 0.0),
+                                         AutonConstants.TranslationPID,
                                          // Translation PID constants
                                          new PIDConstants(swerveDrive.swerveController.config.headingPIDF.p,
                                                           swerveDrive.swerveController.config.headingPIDF.i,
@@ -144,18 +149,12 @@ public class SwerveSubsystem extends SubsystemBase
    * @param setOdomToStart Set the odometry position to the start of the path.
    * @return {@link AutoBuilder#followPath(PathPlannerPath)} path command.
    */
-  public Command getAutonomousCommand(String pathName, boolean setOdomToStart)
+  public Command getAutonomousCommand(String pathName)
   {
     // Load the path you want to follow using its name in the GUI
-    PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
-
-    if (setOdomToStart)
-    {
-      resetOdometry(new Pose2d(path.getPoint(0).position, getHeading()));
-    }
-
+    
     // Create a path following command using AutoBuilder. This will also trigger event markers.
-    return AutoBuilder.followPath(path);
+    return new PathPlannerAuto(pathName);
   }
 
   /**
@@ -246,7 +245,16 @@ public class SwerveSubsystem extends SubsystemBase
     });
   }
 
+    public Command sysIdDriveMotorCommand()
+    {
+      return SwerveDriveTest.generateSysIdCommand(SwerveDriveTest.setDriveSysIdRoutine(new Config(), this, swerveDrive, 12), 3, 5, 3);
+    }
+
+    public Command sysIdAngleMotorCommand(){
+      return SwerveDriveTest.generateSysIdCommand(SwerveDriveTest.setAngleSysIdRoutine(new Config(), this, swerveDrive), 3, 5, 3);
+    }
   /**
+   * 
    * The primary method for controlling the drivebase.  Takes a {@link Translation2d} and a rotation rate, and
    * calculates and commands module states accordingly.  Can use either open-loop or closed-loop velocity control for
    * the wheel velocities.  Also has field- and robot-relative modes, which affect how the translation vector is used.

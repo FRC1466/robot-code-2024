@@ -3,7 +3,7 @@ package frc.robot.subsystems.Manipulator;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -25,7 +25,7 @@ import webblib.math.ArmPIDController;
 
 public class Dragonhead extends SubsystemBase{
 
-  private TalonFX armMotor;
+  private TalonFX armMotorRight, armMotorLeft;
   private DutyCycleEncoder absoluteArmEncoder;
   private ArmPIDController armPID;
   private Rotation2d localSetpoint;
@@ -36,7 +36,8 @@ public class Dragonhead extends SubsystemBase{
 
   /** Create a new VirtualFourBar subsystem. */
   public Dragonhead() {
-    armMotor = new TalonFX(DragonheadConstants.armPort);
+    armMotorRight = new TalonFX(DragonheadConstants.rightArmPort);
+    armMotorLeft = new TalonFX(DragonheadConstants.leftArmPort);
     
 
     absoluteArmEncoder = new DutyCycleEncoder(DragonheadConstants.dutyCyclePort);
@@ -121,7 +122,8 @@ public class Dragonhead extends SubsystemBase{
   }
 
   public void setMotor(double percent) {
-    armMotor.set(percent);
+    armMotorRight.set(percent);
+    armMotorLeft.set(percent);
   }
 
   public void setFeedforward(DoubleSupplier ff) {
@@ -199,6 +201,7 @@ public class Dragonhead extends SubsystemBase{
     SmartDashboard.putData(absoluteArmEncoder);
     SmartDashboard.putNumber("Arm Raw Absolute Encoder", absoluteArmEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("Arm Processed Absolute Encoder", getPosition().getRadians());
+    SmartDashboard.putNumber("Get Shifted Absolute Position", getShiftedAbsoluteDistance().getRadians());
     SmartDashboard.putNumber("Arm PID error", armPID.getPositionError());
     SmartDashboard.putString("Arm COM", getCOM().get().toString());
     SmartDashboard.putBoolean("Arm Disabled", disabled);
