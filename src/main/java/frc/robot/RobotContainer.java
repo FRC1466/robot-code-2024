@@ -47,8 +47,8 @@ public class RobotContainer
   private final EndEffector outTake = new EndEffector();
   private final Intake intake = new Intake();   
   private final Indexer index = new Indexer();  
-  /*   private final Dragonhead Fafnir = new Dragonhead();  
-  private final SuperStructure superstructure = new SuperStructure(outTake, Fafnir, intake, index);
+  //private final Dragonhead Fafnir = new Dragonhead();  
+  /*private final SuperStructure superstructure = new SuperStructure(outTake, Fafnir, intake, index);
   private final AutoMap autoMap = new AutoMap(superstructure, outTake, Fafnir);
 */
                                                
@@ -119,10 +119,10 @@ public class RobotContainer
     //driverController.button(8).onTrue(index.launch()).onFalse(index.stop());
     driverController.button(9).onTrue(index.drop()).onFalse(index.stop());
     driverController.button(10).onTrue(index.stop());
-    driverController.button(13).onTrue(intake.stop());
+    //driverController.button(13).onTrue(intake.stop());
     driverController.button(12).onTrue(intake.intake()).onFalse(intake.stop());
     driverController.button(11).onTrue(intake.reverseIntake()).onFalse(intake.stop());
-    //driverController.button(14).onTrue(Fafnir.podium()).onFalse(Fafnir.setArmP(.2).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)));
+    //driverController.button(3).onTrue(Fafnir.podium()).onFalse(Fafnir.setArmP(.2).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)));
     //driverController.button(15).onTrue(Fafnir.amp()).onFalse(Fafnir.setArmP(.2).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)));
 
     
