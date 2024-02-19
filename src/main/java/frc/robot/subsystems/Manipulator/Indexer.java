@@ -55,7 +55,7 @@ public class Indexer extends SubsystemBase {
     return runOnce(() -> setRollers(-2));
   }
   public Command outtake() {
-    return runOnce(() -> setRollers(-7));
+    return runOnce(() -> setRollers(-9));
   }
 
 

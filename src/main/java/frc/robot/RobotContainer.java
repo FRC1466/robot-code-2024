@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -22,12 +23,14 @@ import frc.robot.Constants.DragonheadConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoMap;
 import frc.robot.commands.SuperStructure;
-import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.Manipulator.Dragonhead;
 import frc.robot.subsystems.Manipulator.EndEffector;
 import frc.robot.subsystems.Manipulator.Indexer;
 import frc.robot.subsystems.Manipulator.Intake;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
+
 import java.io.File;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -47,7 +50,7 @@ public class RobotContainer
   private final EndEffector outTake = new EndEffector();
   private final Intake intake = new Intake();   
   private final Indexer index = new Indexer();  
-  //private final Dragonhead Fafnir = new Dragonhead();  
+  private final Dragonhead Fafnir = new Dragonhead();  
   /*private final SuperStructure superstructure = new SuperStructure(outTake, Fafnir, intake, index);
   private final AutoMap autoMap = new AutoMap(superstructure, outTake, Fafnir);
 */
@@ -104,26 +107,27 @@ public class RobotContainer
     Trigger indexBeamBreak = new Trigger(() -> index.getIndexerBeamBreak());
     driverController.povDown().onTrue(Commands.runOnce(drivebase::zeroGyro));
     
-    driverController.button(1).whileTrue(outTake.shoot().alongWith(index.outtake())).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
+    driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(.6).andThen(index.outtake()))).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
     
     //driverController.button(1).onTrue(outTake.shoot()).onFalse(outTake.stop());
     //intake
     // 
-    driverController.button(2).and(indexBeamBreak).whileTrue(intake.intake().alongWith(index.outtake())).onFalse(intake.stop().alongWith(index.stop()));
+    driverController.button(3).and(indexBeamBreak).whileTrue(intake.intake().alongWith(index.outtake())).onFalse(intake.stop().alongWith(index.stop()));
 
 
-
-      driverController.button(4).onTrue(outTake.ampShoot()).onFalse(outTake.stop());
-
-    driverController.button(7).onTrue(outTake.drop()).onFalse(outTake.stop());
+    //climb
+    driverController.button(6).onTrue(Fafnir.amp()).onFalse(Fafnir.setArmP(.25).andThen(Fafnir.setPeakOutput(.9)).andThen(Fafnir.podium()));
+    //.andThen(Fafnir.podium()));
+    driverController.button(7).onTrue(outTake.drop().alongWith(index.drop()).alongWith(intake.reverseIntake())).onFalse(outTake.stop().alongWith(index.stop()).alongWith(intake.stop()));
     //driverController.button(8).onTrue(index.launch()).onFalse(index.stop());
-    driverController.button(9).onTrue(index.drop()).onFalse(index.stop());
-    driverController.button(10).onTrue(index.stop());
+    //driverController.button(9).onTrue(index.drop()).onFalse(index.stop());
+    //driverController.button(10).onTrue(index.stop());
     //driverController.button(13).onTrue(intake.stop());
-    driverController.button(12).onTrue(intake.intake()).onFalse(intake.stop());
-    driverController.button(11).onTrue(intake.reverseIntake()).onFalse(intake.stop());
-    //driverController.button(3).onTrue(Fafnir.podium()).onFalse(Fafnir.setArmP(.2).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)));
-    //driverController.button(15).onTrue(Fafnir.amp()).onFalse(Fafnir.setArmP(.2).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)));
+    //driverController.button(12).onTrue(intake.intake()).onFalse(intake.stop());
+    //driverController.button(11).onTrue(intake.reverseIntake()).onFalse(intake.stop());
+   // driverController.button(3).onTrue(Fafnir.podium()).onFalse(Fafnir.setArmP(.2).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)));
+    //make an amp shoot command eventually
+    driverController.button(4).onTrue(Fafnir.amp()).onFalse(outTake.shoot().andThen(index.outtake()).andThen(Commands.waitSeconds(.25)).andThen(outTake.stop()).andThen(index.stop()).andThen(Fafnir.setArmP(.2)).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)));
 
     
  
@@ -134,7 +138,6 @@ public class RobotContainer
 
     return new PathPlannerAuto("Full Test Path Auto");
   }
-
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

@@ -27,6 +27,7 @@ public class Dragonhead extends SubsystemBase{
 
   private TalonFX armMotorRight, armMotorLeft;
   private DutyCycleEncoder absoluteArmEncoder;
+  private double peakOutput;
   private ArmPIDController armPID;
   private Rotation2d localSetpoint;
   private DoubleSupplier overrideFeedforward = () -> 0.0;
@@ -39,7 +40,7 @@ public class Dragonhead extends SubsystemBase{
     armMotorRight = new TalonFX(DragonheadConstants.rightArmPort);
     armMotorLeft = new TalonFX(DragonheadConstants.leftArmPort);
     
-
+    peakOutput = DragonheadConstants.dragonPosition.peakOutput;
     absoluteArmEncoder = new DutyCycleEncoder(DragonheadConstants.dutyCyclePort);
     absoluteArmEncoder.setDutyCycleRange(0, 1);
     absoluteArmEncoder.setDistancePerRotation(1.0);
@@ -63,6 +64,9 @@ public class Dragonhead extends SubsystemBase{
   }
   public Command setArmP(double p){
     return runOnce(() ->armPID.setP(p));
+  }
+    public Command setPeakOutput(double output){
+    return runOnce(() -> peakOutput = output);
   }
   @Override
   public void simulationPeriodic() {
@@ -111,8 +115,8 @@ public class Dragonhead extends SubsystemBase{
     var motorOutput =
         MathUtil.clamp(
             armPID.calculate(getPosition(), localSetpoint),
-            -DragonheadConstants.dragonPosition.peakOutput,
-            DragonheadConstants.dragonPosition.peakOutput);
+            -peakOutput,
+            peakOutput);
     var feedforward = getPosition().getCos() * DragonheadConstants.gravityFF;
     setMotor(motorOutput + feedforward + overrideFeedforward.getAsDouble());
 
@@ -123,7 +127,7 @@ public class Dragonhead extends SubsystemBase{
 
   public void setMotor(double percent) {
     armMotorRight.set(percent);
-    armMotorLeft.set(percent);
+    armMotorLeft.set(-percent);
   }
 
   public void setFeedforward(DoubleSupplier ff) {

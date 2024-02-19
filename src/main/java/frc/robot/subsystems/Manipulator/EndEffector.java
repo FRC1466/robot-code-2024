@@ -24,7 +24,7 @@ public class EndEffector extends SubsystemBase {
 
   /** Create a new Gripper subsystem. */
  public EndEffector() {
-    shooterMotorLeft = new TalonFX(Outtake.SHOOTER_ID_LEFT, "rio");
+    shooterMotorLeft = new TalonFX(Outtake.SHOOTER_ID_LEFT);
     shooterMotorRight = new TalonFX(Outtake.SHOOTER_ID_RIGHT);
 
   }
