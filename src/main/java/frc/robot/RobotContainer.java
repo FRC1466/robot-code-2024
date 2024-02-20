@@ -85,7 +85,7 @@ public class RobotContainer
     Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
         () -> MathUtil.applyDeadband(driverController.getY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(driverController.getX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> MathUtil.applyDeadband(driverController.getZ()*.8, .1)).withName("Default Drive Command");
+        () -> MathUtil.applyDeadband(driverController.getZ()*1.15, .1)).withName("Default Drive Command");
 
 
 
@@ -107,7 +107,7 @@ public class RobotContainer
     Trigger indexBeamBreak = new Trigger(() -> index.getIndexerBeamBreak());
     driverController.povDown().onTrue(Commands.runOnce(drivebase::zeroGyro));
     
-    driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(.6).andThen(index.outtake()))).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
+    driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(0.2).andThen(index.outtake()))).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
     
     //driverController.button(1).onTrue(outTake.shoot()).onFalse(outTake.stop());
     //intake
@@ -127,7 +127,7 @@ public class RobotContainer
     //driverController.button(11).onTrue(intake.reverseIntake()).onFalse(intake.stop());
    // driverController.button(3).onTrue(Fafnir.podium()).onFalse(Fafnir.setArmP(.2).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)));
     //make an amp shoot command eventually
-    driverController.button(4).onTrue(Fafnir.amp()).onFalse(outTake.shoot().andThen(index.outtake()).andThen(Commands.waitSeconds(.25)).andThen(outTake.stop()).andThen(index.stop()).andThen(Fafnir.setArmP(.2)).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)));
+    driverController.button(4).onTrue(Fafnir.amp()).onFalse(outTake.shoot().andThen(index.outtake()).andThen(Commands.waitSeconds(.25)).andThen(outTake.stop()).andThen(index.stop()).andThen(Fafnir.setArmP(.2)).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
 
     
  
