@@ -106,6 +106,18 @@ public class Robot extends TimedRobot
       
       System.out.println("AUTO SCHEDULE");
     }
+    
+   
+   boolean alreadyBroken = false;
+    if(!m_robotContainer.beamBreak() && alreadyBroken){
+      System.out.println(m_robotContainer.beamBreak());
+      System.out.println("Stopped");
+      m_robotContainer.stopAll();
+      alreadyBroken = false;
+    }
+   if(m_robotContainer.beamBreak() && !alreadyBroken){
+      alreadyBroken = true;
+    }
   }
 
   @Override

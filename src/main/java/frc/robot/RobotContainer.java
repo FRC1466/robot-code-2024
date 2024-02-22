@@ -33,6 +33,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 
 import java.io.File;
 
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 /**
@@ -51,6 +52,7 @@ public class RobotContainer
   private final Intake intake = new Intake();   
   private final Indexer index = new Indexer();  
   private final Dragonhead Fafnir = new Dragonhead();  
+
   /*private final SuperStructure superstructure = new SuperStructure(outTake, Fafnir, intake, index);
   private final AutoMap autoMap = new AutoMap(superstructure, outTake, Fafnir);
 */
@@ -69,6 +71,10 @@ public class RobotContainer
   public RobotContainer()
   {
     // Configure the trigger bindings
+    NamedCommands.registerCommand("Intake", index.outtake().alongWith(intake.intake()).alongWith(Commands.waitSeconds(2)).andThen(intake.stop()).andThen(index.stop()));
+    NamedCommands.registerCommand("Shoot", outTake.shoot().alongWith(Commands.waitSeconds(.4).andThen(index.outtake())));
+    
+    NamedCommands.registerCommand("StopAll", outTake.stop().alongWith(index.stop()).alongWith(intake.stop()));
     configureBindings();
 
     // Applies deadbands and inverts controls because joysticks
@@ -100,6 +106,18 @@ public class RobotContainer
    * {@link CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4}
    * controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
    */
+public Command intakeNote(){
+  return intake.intake().alongWith(index.outtake());
+}
+public void stopAll(){
+ intake.setVoltage(0);
+ index.setRollers(0);
+ outTake.setVoltage(0);
+}
+public boolean beamBreak(){
+  return index.getIndexerBeamBreak();
+}
+  
   private void configureBindings()
   {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
@@ -107,9 +125,9 @@ public class RobotContainer
     Trigger indexBeamBreak = new Trigger(() -> index.getIndexerBeamBreak());
     driverController.povDown().onTrue(Commands.runOnce(drivebase::zeroGyro));
     
-    driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(0.2).andThen(index.outtake()))).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
+    driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(0.5).andThen(index.outtake()))).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
     
-    //driverController.button(1).onTrue(outTake.shoot()).onFalse(outTake.stop());
+    //driverController.button(1).onTrue(outTake.shoot()).onFalse(outTake.stop());`
     //intake
     // 
     driverController.button(3).and(indexBeamBreak).whileTrue(intake.intake().alongWith(index.outtake())).onFalse(intake.stop().alongWith(index.stop()));
@@ -134,9 +152,9 @@ public class RobotContainer
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }
 
-  public Command getAutonomousCommand(){
+ public Command getAutonomousCommand(){
 
-    return new PathPlannerAuto("Full Test Path Auto");
+  return new PathPlannerAuto("4 Piece Auto");
   }
 
   /**

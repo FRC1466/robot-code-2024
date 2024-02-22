@@ -49,7 +49,7 @@ public final class Constants
   public static final class DragonheadConstants{
       public static final int rightArmPort = 19, leftArmPort = 20,
       dutyCyclePort = 1;
-      public static final Gains dragonPosition = new Gains(.38,0.001,0.001,0,0,0.38);
+      public static final Gains dragonPosition = new Gains(.33,0.002,0.002,0,0,0.38);
       public static final double restRadians = Math.PI/48;
       public static final double ampRadians = 7*Math.PI/12;
       public static final double maxRadians = 2*Math.PI/3;
