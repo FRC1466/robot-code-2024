@@ -130,7 +130,7 @@ public boolean beamBreak(){
     //driverController.button(1).onTrue(outTake.shoot()).onFalse(outTake.stop());`
     //intake
     // 
-    driverController.button(3).and(indexBeamBreak).whileTrue(intake.intake().alongWith(index.outtake())).onFalse(intake.stop().alongWith(index.stop()));
+    driverController.button(3).and(indexBeamBreak).whileTrue(intake.intake().alongWith(index.launch())).onFalse(intake.stop().alongWith(index.stop()));
 
 
     //climb
@@ -145,7 +145,7 @@ public boolean beamBreak(){
     //driverController.button(11).onTrue(intake.reverseIntake()).onFalse(intake.stop());
    // driverController.button(3).onTrue(Fafnir.podium()).onFalse(Fafnir.setArmP(.2).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)));
     //make an amp shoot command eventually
-    driverController.button(4).onTrue(Fafnir.amp()).onFalse(outTake.shoot().andThen(index.outtake()).andThen(Commands.waitSeconds(.25)).andThen(outTake.stop()).andThen(index.stop()).andThen(Fafnir.setArmP(.2)).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
+    driverController.button(4).onTrue(Fafnir.amp()).onFalse(outTake.shoot().andThen(index.outtake()).andThen(Commands.waitSeconds(.25)).andThen(outTake.stop()).andThen(index.stop()).andThen(Fafnir.setArmP(.2)).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)).andThen(Fafnir.totalArmBrake()));
 
     
  

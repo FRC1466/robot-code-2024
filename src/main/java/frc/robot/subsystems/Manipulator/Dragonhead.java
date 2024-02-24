@@ -68,6 +68,13 @@ public class Dragonhead extends SubsystemBase{
     public Command setPeakOutput(double output){
     return runOnce(() -> peakOutput = output);
   }
+  public void setArmBrake(){
+    armMotorLeft.setNeutralMode(NeutralModeValue.Brake);
+    armMotorRight.setNeutralMode(NeutralModeValue.Brake);
+  }
+  public Command totalArmBrake(){
+    return runOnce(() -> setArmBrake());
+  }
   @Override
   public void simulationPeriodic() {
     //sim.update(armMotor.get());

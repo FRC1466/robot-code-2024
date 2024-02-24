@@ -52,7 +52,7 @@ public class Indexer extends SubsystemBase {
   }
 
   public Command launch() {
-    return runOnce(() -> setRollers(-2));
+    return runOnce(() -> setRollers(-6));
   }
   public Command outtake() {
     return runOnce(() -> setRollers(-10));
