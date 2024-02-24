@@ -23,7 +23,8 @@ public class Robot extends TimedRobot
 
   private static Robot   instance;
   private        Command m_autonomousCommand;
-
+  private boolean isAutoDone = false;
+  private boolean alreadyBroken = true;
   private RobotContainer m_robotContainer;
 
   private Timer disabledTimer;
@@ -93,6 +94,8 @@ public class Robot extends TimedRobot
   {
     m_robotContainer.setMotorBrake(true);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    boolean isAutoDone = false;
+    boolean alreadyBroken = true;
   }
 
   /**
@@ -101,14 +104,15 @@ public class Robot extends TimedRobot
   @Override
   public void autonomousPeriodic()
   {
-    if (m_autonomousCommand != null  ) {
+    System.out.println("Tets");
+    if (m_autonomousCommand != null  && !isAutoDone) {
       m_autonomousCommand.schedule();
-      
+      isAutoDone=true;
       System.out.println("AUTO SCHEDULE");
     }
     
    
-   boolean alreadyBroken = false;
+
     if(!m_robotContainer.beamBreak() && alreadyBroken){
       System.out.println(m_robotContainer.beamBreak());
       System.out.println("Stopped");

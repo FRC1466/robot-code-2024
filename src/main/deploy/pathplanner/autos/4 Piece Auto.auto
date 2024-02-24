@@ -24,7 +24,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.5
+                  "waitTime": 0.7
                 }
               },
               {
@@ -39,7 +39,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left Note from Speaker"
+            "pathName": "Left Note from Front Speaker"
           }
         },
         {
@@ -55,7 +55,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.5
+                  "waitTime": 0.7
                 }
               },
               {
@@ -70,7 +70,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Middle Note from Speaker"
+            "pathName": "Middle Note from Front Speaker"
           }
         },
         {
@@ -86,7 +86,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.5
+                  "waitTime": 0.7
                 }
               },
               {
@@ -101,7 +101,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Right Note from Speaker"
+            "pathName": "Right Note from Front Speaker"
           }
         },
         {
@@ -117,7 +117,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.5
+                  "waitTime": 0.7
                 }
               },
               {

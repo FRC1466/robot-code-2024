@@ -71,8 +71,8 @@ public class RobotContainer
   public RobotContainer()
   {
     // Configure the trigger bindings
-    NamedCommands.registerCommand("Intake", index.outtake().alongWith(intake.intake()).alongWith(Commands.waitSeconds(2)).andThen(intake.stop()).andThen(index.stop()));
-    NamedCommands.registerCommand("Shoot", outTake.shoot().alongWith(Commands.waitSeconds(.4).andThen(index.outtake())));
+    NamedCommands.registerCommand("Intake", index.launch().alongWith(intake.intake()).alongWith(Commands.waitSeconds(2)).andThen(intake.stop()).andThen(index.stop()));
+    NamedCommands.registerCommand("Shoot", outTake.shoot().alongWith(Commands.waitSeconds(.5).andThen(index.outtake())));
     
     NamedCommands.registerCommand("StopAll", outTake.stop().alongWith(index.stop()).alongWith(intake.stop()));
     configureBindings();
@@ -137,7 +137,7 @@ public boolean beamBreak(){
     driverController.button(6).onTrue(Fafnir.amp()).onFalse(Fafnir.setArmP(.25).andThen(Fafnir.setPeakOutput(.9)).andThen(Fafnir.podium()));
     //.andThen(Fafnir.podium()));
     driverController.button(7).onTrue(outTake.drop().alongWith(index.drop()).alongWith(intake.reverseIntake())).onFalse(outTake.stop().alongWith(index.stop()).alongWith(intake.stop()));
-    //driverController.button(8).onTrue(index.launch()).onFalse(index.stop());
+    driverController.button(8).whileTrue(intake.intake().alongWith(index.outtake())).onFalse(intake.stop().alongWith(index.stop()));
     //driverController.button(9).onTrue(index.drop()).onFalse(index.stop());
     //driverController.button(10).onTrue(index.stop());
     //driverController.button(13).onTrue(intake.stop());
