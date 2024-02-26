@@ -29,6 +29,8 @@ public class Dragonhead extends SubsystemBase{
   private DutyCycleEncoder absoluteArmEncoder;
   private double peakOutput;
   private ArmPIDController armPID;
+  private double armPID_P;
+  private double armPID_output;
   private Rotation2d localSetpoint;
   private DoubleSupplier overrideFeedforward = () -> 0.0;
   private boolean disabled = false;
@@ -62,8 +64,12 @@ public class Dragonhead extends SubsystemBase{
   setDefaultCommand(hold());
   //armMotor.setNeuMode(NeutralModeValue.Brake);
   }
+  public void setTotalArmP(double p){
+    armPID_P = p;
+    armPID.setP(p);
+  }
   public Command setArmP(double p){
-    return runOnce(() ->armPID.setP(p));
+    return runOnce(() -> setTotalArmP(p));
   }
     public Command setPeakOutput(double output){
     return runOnce(() -> peakOutput = output);
@@ -213,6 +219,8 @@ public class Dragonhead extends SubsystemBase{
     SmartDashboard.putNumber("Arm Raw Absolute Encoder", absoluteArmEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("Arm Processed Absolute Encoder", getPosition().getRadians());
     SmartDashboard.putNumber("Get Shifted Absolute Position", getShiftedAbsoluteDistance().getRadians());
+    SmartDashboard.putNumber("Get Arm P", armPID_P);
+    SmartDashboard.putNumber("Get Arm Output", peakOutput);
     SmartDashboard.putNumber("Arm PID error", armPID.getPositionError());
     SmartDashboard.putString("Arm COM", getCOM().get().toString());
     SmartDashboard.putBoolean("Arm Disabled", disabled);
