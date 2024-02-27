@@ -9,6 +9,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.pathplanner.lib.util.PIDConstants;
 
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.Manipulator.Dragonhead;
@@ -32,7 +33,8 @@ public final class Constants
   public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag
   public static final double ARM_LENGTH = 0.58;
   public static final Translation3d INITIAL_ARM_MOUNT = new Translation3d(0.3, 0, 0.7);
-
+    public static final Translation3d cameraTranslation = new Translation3d(0.28, 0.0, 0.23);
+    public static final Rotation3d cameraRotation = new Rotation3d(0, Math.toRadians(-10), 0);
   public static final class AutonConstants
   {
 
@@ -46,12 +48,35 @@ public final class Constants
 
     public static final int IndexerBeamBreak = 0;
   }
+
+  public static final class PoseEstimator {
+    /** THANK YOU IRON PANTHERS */
+    public static final double NOISY_DISTANCE_METERS = 2.5;
+
+    /**
+     * The number to multiply by the smallest of the distance minus the above constant, clamped
+     * above 1 to be the numerator of the fraction.
+     */
+    public static final double DISTANCE_WEIGHT = 7;
+
+    /**
+     * The number to multiply by the number of tags beyond the first to get the denominator of the
+     * deviations matrix.
+     */
+    public static final double TAG_PRESENCE_WEIGHT = 10;
+
+    /** The amount to shift the pose ambiguity by before multiplying it. */
+    public static final double POSE_AMBIGUITY_SHIFTER = .2;
+
+    /** The amount to multiply the pose ambiguity by if there is only one tag. */
+    public static final double POSE_AMBIGUITY_MULTIPLIER = 4;
+  }
   public static final class DragonheadConstants{
       public static final int rightArmPort = 19, leftArmPort = 20,
       dutyCyclePort = 1;
-      public static final Gains dragonPosition = new Gains(.28,0.0015,0.002,0,0,0.33);
-      public static final double restRadians = .05;
-      public static final double ampRadians = (7*Math.PI/12)+.15;
+      public static final Gains dragonPosition = new Gains(.33,0.002,0.002,0,0,0.38);
+      public static final double restRadians = Math.PI/48;
+      public static final double ampRadians = 7*Math.PI/12;
       public static final double maxRadians = 2*Math.PI/3;
       public static final double podiumRadians = Math.PI/9;
       public static final double gravityFF = 0.02;
