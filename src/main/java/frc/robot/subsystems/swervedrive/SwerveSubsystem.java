@@ -15,6 +15,7 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -25,6 +26,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -59,9 +62,9 @@ public class SwerveSubsystem extends SubsystemBase
    * Swerve drive object.
    */
   private final SwerveDrive swerveDrive;
-  private final PhotonCameraWrapper photon;
-  private final Pigeon2 gyro;
- public final DifferentialDrivePoseEstimator m_PoseEstimator;
+  private final PhotonCameraWrapper photon = new PhotonCameraWrapper();
+  
+ //public final DifferentialDrivePoseEstimator m_PoseEstimator;
   /**
    * Maximum speed of the robot in meters per second, used to limit acceleration.
    */
@@ -74,7 +77,9 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public SwerveSubsystem(File directory)
   {
-    photon = new PhotonCameraWrapper();
+
+
+    //photon = new PhotonCameraWrapper();
     // Angle conversion factor is 360 / (GEAR RATIO * ENCODER RESOLUTION)
     //  In this case the gear ratio is 12.8 motor revolutions per wheel rotation.
     //  The encoder resolution per motor revolution is 1 per motor revolution.
@@ -122,7 +127,7 @@ public class SwerveSubsystem extends SubsystemBase
   public SwerveSubsystem(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg)
   {
     swerveDrive = new SwerveDrive(driveCfg, controllerCfg, maximumSpeed);
-    photon = new PhotonCameraWrapper();
+    //photon = new PhotonCameraWrapper();
   }
 
   /**
@@ -313,15 +318,28 @@ public class SwerveSubsystem extends SubsystemBase
   {
     swerveDrive.drive(velocity);
   }
-
   @Override
   public void periodic() {
+    var visionEst = photon.getEstimatedGlobalPose(); 
+    System.out.println("It Works(not fully)");
+   visionEst.ifPresent(
+            estimatedRoboPose -> {
+                             System.out.println("It works!");
+                var estPose = estimatedRoboPose.estimatedPose.toPose2d();
+                // Change our trust in the measurement based on the tags we can see
+                var estStdDevs = photon.getEstimationStdDevs(estPose);
 
-     swerveDrive.updateOdometry();
-     var visionEst = photon.getEstimatedGlobalPose();
+                  swerveDrive.addVisionMeasurement(
+                 estimatedRoboPose.estimatedPose.toPose2d(), estimatedRoboPose.timestampSeconds, estStdDevs);
+            });
+            String table = "Drive/";
+      Pose2d pose = getPose();
+      SmartDashboard.putNumber(table + "X", pose.getX());
+      SmartDashboard.putNumber(table + "Y", pose.getY());
+      SmartDashboard.putNumber(table + "Heading", pose.getRotation().getDegrees());
+  }
 
-             };
-       
+    
     
     
             
@@ -532,4 +550,9 @@ public class SwerveSubsystem extends SubsystemBase
   {
     swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
   }
+
+public void addVisionMeasurement(Pose2d pose2d, double timestampSeconds, Matrix<N3, N1> estStdDevs) {
+
+swerveDrive.addVisionMeasurement(pose2d, timestampSeconds, estStdDevs);
+}
 }

@@ -9,8 +9,12 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.pathplanner.lib.util.PIDConstants;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.Manipulator.Dragonhead;
 import swervelib.math.Matter;
@@ -32,9 +36,10 @@ public final class Constants
   public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
   public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag
   public static final double ARM_LENGTH = 0.58;
+      public static final Translation3d cameraTranslation = new Translation3d(0.28, 0.0, 0.23);
+    public static final Rotation3d cameraRotation = new Rotation3d(0, Math.toRadians(-15), 0);
   public static final Translation3d INITIAL_ARM_MOUNT = new Translation3d(0.3, 0, 0.7);
-    public static final Translation3d cameraTranslation = new Translation3d(0.28, 0.0, 0.23);
-    public static final Rotation3d cameraRotation = new Rotation3d(0, Math.toRadians(-10), 0);
+
   public static final class AutonConstants
   {
 
@@ -47,6 +52,10 @@ public final class Constants
   public static final class IndexerConstants{
 
     public static final int IndexerBeamBreak = 0;
+  }
+  public static final class VisionConstants{
+      public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(2, 2, 2);
+      public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(.2, .2, .4);
   }
 
   public static final class PoseEstimator {
@@ -74,13 +83,13 @@ public final class Constants
   public static final class DragonheadConstants{
       public static final int rightArmPort = 19, leftArmPort = 20,
       dutyCyclePort = 1;
-      public static final Gains dragonPosition = new Gains(.33,0.002,0.002,0,0,0.38);
-      public static final double restRadians = Math.PI/48;
-      public static final double ampRadians = 7*Math.PI/12;
+      public static final Gains dragonPosition = new Gains(.35,0.002,0.0035,0,0,0.4);
+      public static final double restRadians = .07;
+      public static final double ampRadians = (7*Math.PI/12)+.3;
       public static final double maxRadians = 2*Math.PI/3;
       public static final double podiumRadians = Math.PI/9;
       public static final double gravityFF = 0.02;
-      public static final double absolutePositionOffset = -1.653;
+      public static final double absolutePositionOffset = -.1564;
       public static final boolean encoderInverted = false;
       public static final double dutyCycleResolution = 1.0;
       public static final class DragonConfig {

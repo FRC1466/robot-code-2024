@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.net.PortForwarder;
-import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
@@ -47,7 +46,7 @@ public class RobotContainer
 {
 
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+  public final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve"));
                                                                         
   private final EndEffector outTake = new EndEffector();
@@ -73,14 +72,15 @@ public class RobotContainer
    */
   public RobotContainer()
   {
-    PortForwarder.add(5800, "photonvision.local", 5800);
-
-    //Configure the trigger bindings
+   
+    // Configure the trigger bindings
+   
     NamedCommands.registerCommand("Intake", index.launch().alongWith(intake.intake()).alongWith(Commands.waitSeconds(2)).andThen(intake.stop()).andThen(index.stop()));
-    NamedCommands.registerCommand("Shoot", outTake.shoot().alongWith(Commands.waitSeconds(.5).andThen(index.outtake())));
+    NamedCommands.registerCommand("Shoot", outTake.shoot().alongWith(Commands.waitSeconds(.6).andThen(index.outtake())));
     
     NamedCommands.registerCommand("StopAll", outTake.stop().alongWith(index.stop()).alongWith(intake.stop()));
     configureBindings();
+     PortForwarder.add(5800, "photonvision.local", 5800);
 
     // Applies deadbands and inverts controls because joysticks
     // are back-right positive while robot
@@ -122,6 +122,13 @@ public void stopAll(){
 public boolean beamBreak(){
   return index.getIndexerBeamBreak();
 }
+public void resetPID(){
+  Fafnir.setArmP(Constants.DragonheadConstants.dragonPosition.P);
+  Fafnir.setPeakOutput(Constants.DragonheadConstants.dragonPosition.peakOutput);
+}
+public Command backPID(){
+  return runOnce(() -> resetPID());
+}
   
   private void configureBindings()
   {
@@ -139,8 +146,10 @@ public boolean beamBreak(){
 
 
     //climb
-    driverController.button(6).onTrue(Fafnir.amp()).onFalse(Fafnir.setArmP(.25).andThen(Fafnir.setPeakOutput(.9)).andThen(Fafnir.podium()));
+    driverController.button(6).onTrue(Fafnir.amp()).onFalse(Fafnir.setArmP(.4).andThen(Fafnir.setPeakOutput(.5)).andThen(Fafnir.store()).alongWith(Commands.waitSeconds(.5)).andThen(Fafnir.setPeakOutput(.8).andThen(Fafnir.setArmP(.7)).andThen(Fafnir.store())));
+    //.andThen(Fafnir.totalArmBrake())));
     //.andThen(Fafnir.podium()));
+
     driverController.button(7).onTrue(outTake.drop().alongWith(index.drop()).alongWith(intake.reverseIntake())).onFalse(outTake.stop().alongWith(index.stop()).alongWith(intake.stop()));
     driverController.button(8).whileTrue(intake.intake().alongWith(index.outtake())).onFalse(intake.stop().alongWith(index.stop()));
     //driverController.button(9).onTrue(index.drop()).onFalse(index.stop());
@@ -150,7 +159,9 @@ public boolean beamBreak(){
     //driverController.button(11).onTrue(intake.reverseIntake()).onFalse(intake.stop());
    // driverController.button(3).onTrue(Fafnir.podium()).onFalse(Fafnir.setArmP(.2).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)));
     //make an amp shoot command eventually
-    driverController.button(4).onTrue(Fafnir.amp()).onFalse(outTake.shoot().andThen(index.outtake()).andThen(Commands.waitSeconds(.25)).andThen(outTake.stop()).andThen(index.stop()).andThen(Fafnir.setArmP(.2)).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)).andThen(Fafnir.totalArmBrake()));
+   driverController.button(5).onTrue(Fafnir.setArmP(DragonheadConstants.dragonPosition.P).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
+    
+    //driverController.button(4).onTrue(Fafnir.amp()).onFalse(outTake.ampShoot().andThen(index.outtake()).andThen(Commands.waitSeconds(3)).andThen(outTake.stop()).andThen(index.stop()).andThen(Fafnir.setArmP(.2)).andThen(Fafnir.setPeakOutput(.2)).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
 
     
  
