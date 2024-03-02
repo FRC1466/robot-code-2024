@@ -80,7 +80,7 @@ public class RobotContainer
     
     NamedCommands.registerCommand("StopAll", outTake.stop().alongWith(index.stop()).alongWith(intake.stop()));
     configureBindings();
-     PortForwarder.add(5800, "photonvision.local", 5800);
+     //PortForwarder.add(5800, "photonvision.local", 5800);
 
     // Applies deadbands and inverts controls because joysticks
     // are back-right positive while robot
@@ -161,7 +161,7 @@ public Command backPID(){
     //make an amp shoot command eventually
    driverController.button(5).onTrue(Fafnir.setArmP(DragonheadConstants.dragonPosition.P).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
     
-    //driverController.button(4).onTrue(Fafnir.amp()).onFalse(outTake.ampShoot().andThen(index.outtake()).andThen(Commands.waitSeconds(3)).andThen(outTake.stop()).andThen(index.stop()).andThen(Fafnir.setArmP(.2)).andThen(Fafnir.setPeakOutput(.2)).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
+  driverController.button(4).onTrue(Fafnir.amp()).onFalse(outTake.ampShoot().andThen(index.outtake()).andThen(Commands.waitSeconds(1.5)).andThen(outTake.stop()).andThen(index.stop()).andThen(Fafnir.setArmP(.2)).andThen(Fafnir.setPeakOutput(.2)).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
 
     
  

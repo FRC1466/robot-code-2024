@@ -62,7 +62,7 @@ public class SwerveSubsystem extends SubsystemBase
    * Swerve drive object.
    */
   private final SwerveDrive swerveDrive;
-  private final PhotonCameraWrapper photon = new PhotonCameraWrapper();
+  //private final PhotonCameraWrapper photon = new PhotonCameraWrapper();
   
  //public final DifferentialDrivePoseEstimator m_PoseEstimator;
   /**
@@ -320,9 +320,9 @@ public class SwerveSubsystem extends SubsystemBase
   }
   @Override
   public void periodic() {
-    var visionEst = photon.getEstimatedGlobalPose(); 
-    System.out.println("It Works(not fully)");
-   visionEst.ifPresent(
+   /*   var visionEst = photon.getEstimatedGlobalPose(); 
+   //  System.out.println("It Works(not fully)");
+    visionEst.ifPresent(
             estimatedRoboPose -> {
                              System.out.println("It works!");
                 var estPose = estimatedRoboPose.estimatedPose.toPose2d();
@@ -336,7 +336,7 @@ public class SwerveSubsystem extends SubsystemBase
       Pose2d pose = getPose();
       SmartDashboard.putNumber(table + "X", pose.getX());
       SmartDashboard.putNumber(table + "Y", pose.getY());
-      SmartDashboard.putNumber(table + "Heading", pose.getRotation().getDegrees());
+      SmartDashboard.putNumber(table + "Heading", pose.getRotation().getDegrees());*/
   }
 
     
