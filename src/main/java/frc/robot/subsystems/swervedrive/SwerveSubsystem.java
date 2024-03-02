@@ -43,7 +43,7 @@ import java.io.File;
 import java.util.Comparator;
 import java.util.function.DoubleSupplier;
 
-import org.photonvision.EstimatedRobotPose;
+
 
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
@@ -62,7 +62,7 @@ public class SwerveSubsystem extends SubsystemBase
    * Swerve drive object.
    */
   private final SwerveDrive swerveDrive;
-  //private final PhotonCameraWrapper photon = new PhotonCameraWrapper();
+
   
  //public final DifferentialDrivePoseEstimator m_PoseEstimator;
   /**
@@ -318,26 +318,7 @@ public class SwerveSubsystem extends SubsystemBase
   {
     swerveDrive.drive(velocity);
   }
-  @Override
-  public void periodic() {
-   /*   var visionEst = photon.getEstimatedGlobalPose(); 
-   //  System.out.println("It Works(not fully)");
-    visionEst.ifPresent(
-            estimatedRoboPose -> {
-                             System.out.println("It works!");
-                var estPose = estimatedRoboPose.estimatedPose.toPose2d();
-                // Change our trust in the measurement based on the tags we can see
-                var estStdDevs = photon.getEstimationStdDevs(estPose);
 
-                  swerveDrive.addVisionMeasurement(
-                 estimatedRoboPose.estimatedPose.toPose2d(), estimatedRoboPose.timestampSeconds, estStdDevs);
-            });
-            String table = "Drive/";
-      Pose2d pose = getPose();
-      SmartDashboard.putNumber(table + "X", pose.getX());
-      SmartDashboard.putNumber(table + "Y", pose.getY());
-      SmartDashboard.putNumber(table + "Heading", pose.getRotation().getDegrees());*/
-  }
 
     
     
@@ -357,10 +338,6 @@ public class SwerveSubsystem extends SubsystemBase
   }
 
 
-  @Override
-  public void simulationPeriodic()
-  {
-  }
 
   /**
    * Get the swerve drive kinematics object.
