@@ -12,6 +12,7 @@ import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -36,6 +37,7 @@ import java.io.File;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathConstraints;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -44,8 +46,8 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
  */
 public class RobotContainer
 {
-
-  // The robot's subsystems and commands are defined here...
+ private SendableChooser<Command> chooser = new SendableChooser<>();
+   // The robot's subsystems and commands are defined here...
   public final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve"));
                                                                         
@@ -80,8 +82,7 @@ public class RobotContainer
     
     NamedCommands.registerCommand("StopAll", outTake.stop().alongWith(index.stop()).alongWith(intake.stop()));
     configureBindings();
-     //PortForwarder.add(5800, "photonvision.local", 5800);
-
+    
     // Applies deadbands and inverts controls because joysticks
     // are back-right positive while robot
     // controls are front-left positive
@@ -122,6 +123,15 @@ public void stopAll(){
 public boolean beamBreak(){
   return index.getIndexerBeamBreak();
 }
+public void initializeChooser(){
+
+  chooser.addOption(
+        "4 Piece Auto",
+       new PathPlannerAuto("4 Piece Auto SMR"));
+  chooser.addOption("Taxi", new PathPlannerAuto("Taxi"));
+  chooser.addOption("2 Piece Top",new PathPlannerAuto("2 piece auto - top"));
+  chooser.addOption("2 Piece Center", new PathPlannerAuto("2 piece auto - center"));
+}
 public void resetPID(){
   Fafnir.setArmP(Constants.DragonheadConstants.dragonPosition.P);
   Fafnir.setPeakOutput(Constants.DragonheadConstants.dragonPosition.peakOutput);
@@ -161,17 +171,14 @@ public Command backPID(){
     //make an amp shoot command eventually
    driverController.button(5).onTrue(Fafnir.setArmP(DragonheadConstants.dragonPosition.P).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
     
-  driverController.button(4).onTrue(Fafnir.amp()).onFalse(outTake.ampShoot().andThen(index.outtake()).andThen(Commands.waitSeconds(1.5)).andThen(outTake.stop()).andThen(index.stop()).andThen(Fafnir.setArmP(.2)).andThen(Fafnir.setPeakOutput(.2)).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
+    //driverController.button(4).onTrue(Fafnir.amp()).onFalse(outTake.ampShoot().andThen(index.outtake()).andThen(Commands.waitSeconds(3)).andThen(outTake.stop()).andThen(index.stop()).andThen(Fafnir.setArmP(.2)).andThen(Fafnir.setPeakOutput(.2)).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
 
     
  
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }
 
- public Command getAutonomousCommand(){
 
-  return new PathPlannerAuto("4 Piece Auto");
-  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
