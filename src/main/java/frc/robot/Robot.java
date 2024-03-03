@@ -106,6 +106,7 @@ public class Robot extends TimedRobot
   {
     m_robotContainer.setMotorBrake(true);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_robotContainer.Fafnir.store();
     boolean isAutoDone = false;
     boolean alreadyBroken = true;
   }
@@ -139,6 +140,7 @@ public class Robot extends TimedRobot
   @Override
   public void teleopInit()
   {
+      m_robotContainer.Fafnir.store();
 
     m_robotContainer.setMotorBrake(true);
     m_robotContainer.resetPID();
@@ -155,6 +157,7 @@ public class Robot extends TimedRobot
   @Override
   public void teleopPeriodic()
   {
+    isAutoDone = false;
   }
 
   @Override
