@@ -63,7 +63,7 @@ public class SwerveSubsystem extends SubsystemBase
    */
   private final SwerveDrive swerveDrive;
   private final PhotonCameraWrapper photon = new PhotonCameraWrapper();
-  
+  private final Pigeon2 gyro = new Pigeon2(13);
  //public final DifferentialDrivePoseEstimator m_PoseEstimator;
   /**
    * Maximum speed of the robot in meters per second, used to limit acceleration.
@@ -77,8 +77,7 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public SwerveSubsystem(File directory)
   {
-
-
+    
     //photon = new PhotonCameraWrapper();
     // Angle conversion factor is 360 / (GEAR RATIO * ENCODER RESOLUTION)
     //  In this case the gear ratio is 12.8 motor revolutions per wheel rotation.
@@ -321,7 +320,7 @@ public class SwerveSubsystem extends SubsystemBase
   @Override
   public void periodic() {
     var visionEst = photon.getEstimatedGlobalPose(); 
-    System.out.println("It Works(not fully)");
+    System.out.println(visionEst);
    visionEst.ifPresent(
             estimatedRoboPose -> {
                              System.out.println("It works!");
@@ -420,6 +419,11 @@ public class SwerveSubsystem extends SubsystemBase
   public void zeroGyro()
   {
     swerveDrive.zeroGyro();
+  }
+
+  public void negativeZeroGyro()
+  {
+    swerveDrive.setGyro(new Rotation3d(0, 0, Math.toRadians(-180)));
   }
 
   /**

@@ -75,6 +75,7 @@ public double getCurrentRight() {
     return indexMotorRight.getOutputCurrent();
   }
 
+
   @Override
   public void periodic() {
     filteredCurrentLeft = currentFilter.calculate(getCurrentLeft());

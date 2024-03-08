@@ -28,7 +28,7 @@ public class Robot extends TimedRobot
   private boolean isAutoDone = false;
   private boolean alreadyBroken = true;
   private RobotContainer m_robotContainer;
-  private PhotonCameraWrapper photon = new PhotonCameraWrapper();
+  private PhotonCameraWrapper photon = new PhotonCameraWrapper();  private boolean lightBreak;
   
 
 
@@ -72,6 +72,7 @@ public class Robot extends TimedRobot
   
   {
 
+
          //swerveDrive.updateOdometry();
 
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
@@ -106,6 +107,7 @@ public class Robot extends TimedRobot
   {
     m_robotContainer.setMotorBrake(true);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_robotContainer.Fafnir.store();
     boolean isAutoDone = false;
     boolean alreadyBroken = true;
   }
