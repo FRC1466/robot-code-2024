@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -132,6 +133,7 @@ public void initializeChooser(){
   chooser.addOption("Taxi", new PathPlannerAuto("Taxi"));
   chooser.addOption("2 Piece Top",new PathPlannerAuto("2 piece auto - top"));
   chooser.addOption("2 Piece Center", new PathPlannerAuto("2 piece auto - center"));
+  SmartDashboard.putData("CHOOSE", chooser);
 }
 public void resetPID(){
   Fafnir.setArmP(Constants.DragonheadConstants.dragonPosition.P);
@@ -193,6 +195,10 @@ public Command backPID(){
   public void setMotorBrake(boolean brake)
   {
     drivebase.setMotorBrake(brake);
+  }
+
+  public Command getAuto(){
+    return chooser.getSelected();
   }
 
 }
