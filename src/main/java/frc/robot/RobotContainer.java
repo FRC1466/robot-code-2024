@@ -216,5 +216,8 @@ public Command backPID(){
     drivebase.setMotorBrake(brake);
   }
 
+  public Command getAuto(){
+    return chooser.getSelected();
+  }
 
 }

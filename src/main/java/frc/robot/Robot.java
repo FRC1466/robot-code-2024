@@ -109,7 +109,7 @@ public class Robot extends TimedRobot
   public void autonomousInit()
   {
     m_robotContainer.setMotorBrake(true);
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = m_robotContainer.getAuto();
     m_robotContainer.Fafnir.store();
     boolean isAutoDone = false;
     boolean alreadyBroken = true;
