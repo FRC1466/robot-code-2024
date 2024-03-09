@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
 import frc.robot.Constants.AutonConstants;
+import frc.robot.subsystems.Manipulator.Dragonhead;
 
 import java.io.File;
 import java.util.Comparator;
@@ -61,9 +62,11 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Swerve drive object.
    */
+  
   private final SwerveDrive swerveDrive;
   private final PhotonCameraWrapper photon = new PhotonCameraWrapper();
   private final Pigeon2 gyro = new Pigeon2(13);
+  private double absoluteXfromSpeaker, absoluteYfromSpeaker, absoluteSqXfromSpeaker, absoluteSqYfromSpeaker,absoluteAddFromSpeaker,absoluteDistFromSpeaker, sqrtOfDist, logOfSqrtofDist;
  //public final DifferentialDrivePoseEstimator m_PoseEstimator;
   /**
    * Maximum speed of the robot in meters per second, used to limit acceleration.
@@ -178,6 +181,7 @@ public class SwerveSubsystem extends SubsystemBase
     // Create a path following command using AutoBuilder. This will also trigger event markers.
     return new PathPlannerAuto(pathName);
   }
+
 
   /**
    * Use PathPlanner Path finding to go to a point on the field.
@@ -317,13 +321,25 @@ public class SwerveSubsystem extends SubsystemBase
   {
     swerveDrive.drive(velocity);
   }
+  public double thetaAngle(){
+          Pose2d pose = getPose();
+    absoluteXfromSpeaker = pose.getX() + .04;
+    absoluteYfromSpeaker = Math.abs(pose.getY() - 5.55);
+    absoluteSqXfromSpeaker = Math.pow(absoluteXfromSpeaker, 2);
+    absoluteSqYfromSpeaker = Math.pow(absoluteYfromSpeaker, 2);
+    absoluteAddFromSpeaker = absoluteSqXfromSpeaker+absoluteSqYfromSpeaker;
+    absoluteDistFromSpeaker = Math.sqrt(absoluteAddFromSpeaker);
+    sqrtOfDist = Math.sqrt(absoluteDistFromSpeaker);
+    logOfSqrtofDist = Math.log(sqrtOfDist);
+    return logOfSqrtofDist;
+  }
   @Override
   public void periodic() {
     var visionEst = photon.getEstimatedGlobalPose(); 
-    System.out.println(visionEst);
+ 
    visionEst.ifPresent(
             estimatedRoboPose -> {
-                             System.out.println("It works!");
+                            
                 var estPose = estimatedRoboPose.estimatedPose.toPose2d();
                 // Change our trust in the measurement based on the tags we can see
                 var estStdDevs = photon.getEstimationStdDevs(estPose);
@@ -333,6 +349,22 @@ public class SwerveSubsystem extends SubsystemBase
             });
             String table = "Drive/";
       Pose2d pose = getPose();
+    absoluteXfromSpeaker = pose.getX() + .04;
+    absoluteYfromSpeaker = Math.abs(pose.getY() - 5.55);
+    absoluteSqXfromSpeaker = Math.pow(absoluteXfromSpeaker, 2);
+    absoluteSqYfromSpeaker = Math.pow(absoluteYfromSpeaker, 2);
+    absoluteAddFromSpeaker = absoluteSqXfromSpeaker+absoluteSqYfromSpeaker;
+    absoluteDistFromSpeaker = Math.sqrt(absoluteAddFromSpeaker);
+    sqrtOfDist = Math.sqrt(absoluteDistFromSpeaker);
+    logOfSqrtofDist = Math.log(sqrtOfDist);
+      SmartDashboard.putNumber(table + "Absolute X from Speaker", absoluteXfromSpeaker);
+      SmartDashboard.putNumber(table + "Absolute Y from Speaker", absoluteYfromSpeaker);
+      SmartDashboard.putNumber(table + "Absolute X^2 from Speaker", absoluteSqXfromSpeaker);
+      SmartDashboard.putNumber(table + "Absolute Y^2 from Speaker", absoluteSqYfromSpeaker);
+      SmartDashboard.putNumber(table + "Absolute X^2 + Y^2 from Speaker", absoluteAddFromSpeaker);
+      SmartDashboard.putNumber(table + "Absolute Sqrt(X^2 + Y^2) from Speaker", absoluteDistFromSpeaker);
+      SmartDashboard.putNumber(table + "Square Root of Dist", sqrtOfDist);
+      SmartDashboard.putNumber(table + "Log of Square Root of Dist", logOfSqrtofDist);
       SmartDashboard.putNumber(table + "X", pose.getX());
       SmartDashboard.putNumber(table + "Y", pose.getY());
       SmartDashboard.putNumber(table + "Heading", pose.getRotation().getDegrees());

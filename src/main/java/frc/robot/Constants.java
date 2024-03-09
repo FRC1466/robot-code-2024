@@ -54,8 +54,8 @@ public final class Constants
     public static final int IndexerBeamBreak = 0;
   }
   public static final class VisionConstants{
-      public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(2, 2, 2);
-      public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(.2, .2, .4);
+      public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(.2, .2, .3);
+      public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(.1, .1, .2);
   }
 
   public static final class PoseEstimator {
@@ -83,13 +83,13 @@ public final class Constants
   public static final class DragonheadConstants{
       public static final int rightArmPort = 19, leftArmPort = 20,
       dutyCyclePort = 1;
-      public static final Gains dragonPosition = new Gains(.3,0.002,0.0014,0,0,0.4);
-      public static final double restRadians = .04;
+      public static final Gains dragonPosition = new Gains(.50,0.0035,0.006,0,0,0.7);
+      public static final double restRadians = .0;
       public static final double ampRadians = (7*Math.PI/12)+.3;
       public static final double maxRadians = (7*Math.PI/12)+.7;
-      public static final double podiumRadians = .46;//not podium, just
+      public static final double podiumRadians = .485;//not podium, just
       public static final double gravityFF = 0.02;
-      public static final double absolutePositionOffset = -.1564;
+      public static final double absolutePositionOffset = -.1565;
       public static final boolean encoderInverted = false;
       public static final double dutyCycleResolution = 1.0;
       public static final class DragonConfig {

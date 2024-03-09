@@ -50,6 +50,8 @@ public class RobotContainer
 
  
   // The robot's subsystems and commands are defined here...
+  private double absoluteDistanceFromSpeaker;
+  private double podiumRadians;
   private SendableChooser<Command> chooser = new SendableChooser<>();
   public final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve"));
@@ -88,6 +90,7 @@ public class RobotContainer
      PortForwarder.add(5800, "photonvision.local", 5800);
 
     initializeChooser();
+
     
     // Applies deadbands and inverts controls because joysticks
     // are back-right positive while robot
@@ -159,19 +162,24 @@ public Command getAuto(){
 public Command backPID(){
   return runOnce(() -> resetPID());
 }
+
+
+
   
   private void configureBindings()
   {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
+
+
     Trigger indexBeamBreak = new Trigger(() -> index.getIndexerBeamBreak());
     driverController.povDown().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverController.povUp().onTrue(Commands.runOnce(drivebase::negativeZeroGyro));
     
-    driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(0.5).andThen(index.outtake()))).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
+    driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(0.4).andThen(index.outtake()))).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
     
     driverController.button(3).and(indexBeamBreak).whileTrue(intake.intake().alongWith(index.launch())).onFalse(intake.stop().alongWith(index.stop()));
-    driverController.button(8).onTrue(Fafnir.podium()).onFalse(Fafnir.store());
+    driverController.button(8).whileTrue(Fafnir.podium()).onFalse(Fafnir.store());
 
     //climb
     driverController.button(6).onTrue(Fafnir.amp()).onFalse(Fafnir.setArmP(.4).andThen(Fafnir.setPeakOutput(.5)).andThen(Fafnir.store()).alongWith(Commands.waitSeconds(.5)).andThen(Fafnir.setPeakOutput(.8).andThen(Fafnir.setArmP(.7)).andThen(Fafnir.store())));
@@ -208,5 +216,6 @@ public Command backPID(){
   {
     drivebase.setMotorBrake(brake);
   }
+
 
 }
