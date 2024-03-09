@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -31,6 +32,8 @@ public class Dragonhead extends SubsystemBase{
   private ArmPIDController armPID;
   private double armPID_P;
   private double armPID_output;
+  private double absoluteDistanceFromSpeaker;
+  private double podiumRadians;
   private Rotation2d localSetpoint;
   private DoubleSupplier overrideFeedforward = () -> 0.0;
   private boolean disabled = false;
@@ -85,6 +88,10 @@ public class Dragonhead extends SubsystemBase{
   public void simulationPeriodic() {
     //sim.update(armMotor.get());
   }
+  public void setPodiumRadians(double rad){
+    podiumRadians = rad;
+  }
+
 
   /** Configure arm motor. */
 
@@ -149,9 +156,12 @@ public class Dragonhead extends SubsystemBase{
   }
 
   public Command podium() {
-    return runOnce(() -> setGoal(Rotation2d.fromRadians(DragonheadConstants.podiumRadians)))
+    return run(() -> setGoal(Rotation2d.fromRadians(podiumRadians)))
        .andThen(holdUntilSetpoint());
   }
+
+
+  
 
   public Command amp() {
     return runOnce(() -> setGoal(Rotation2d.fromRadians(DragonheadConstants.ampRadians)))
@@ -216,6 +226,7 @@ public class Dragonhead extends SubsystemBase{
    setArmHold();
 
     SmartDashboard.putData(absoluteArmEncoder);
+    SmartDashboard.putNumber("PodiumRadians", podiumRadians);
     SmartDashboard.putNumber("Arm Raw Absolute Encoder", absoluteArmEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("Arm Processed Absolute Encoder", getPosition().getRadians());
     SmartDashboard.putNumber("Get Shifted Absolute Position", getShiftedAbsoluteDistance().getRadians());

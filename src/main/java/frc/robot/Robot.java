@@ -27,8 +27,10 @@ public class Robot extends TimedRobot
   private        Command m_autonomousCommand;
   private boolean isAutoDone = false;
   private boolean alreadyBroken = true;
+  private double podiumRadians;
+  private double absoluteDistanceFromSpeaker;
   private RobotContainer m_robotContainer;
-
+  private PhotonCameraWrapper photon = new PhotonCameraWrapper();  private boolean lightBreak;
   
 
 
@@ -72,12 +74,14 @@ public class Robot extends TimedRobot
   
   {
 
+
          //swerveDrive.updateOdometry();
 
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
+    m_robotContainer.Fafnir.setPodiumRadians(m_robotContainer.drivebase.thetaAngle());
     CommandScheduler.getInstance().run();
   }
 

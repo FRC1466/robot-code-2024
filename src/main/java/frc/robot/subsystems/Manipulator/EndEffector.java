@@ -41,7 +41,7 @@ public class EndEffector extends SubsystemBase {
   }
 
   public Command shoot() {
-    return runOnce(() -> setVoltage(-8));
+    return runOnce(() -> setVoltage(-9));
   }
 
   public Command intake() {
