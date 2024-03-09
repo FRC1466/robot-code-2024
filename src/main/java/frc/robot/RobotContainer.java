@@ -174,7 +174,7 @@ public Command backPID(){
 
     Trigger indexBeamBreak = new Trigger(() -> index.getIndexerBeamBreak());
     driverController.povDown().onTrue(Commands.runOnce(drivebase::zeroGyro));
-    driverController.povUp().onTrue(Commands.runOnce(drivebase::negativeZeroGyro));
+  
     
     driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(0.4).andThen(index.outtake()))).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
     

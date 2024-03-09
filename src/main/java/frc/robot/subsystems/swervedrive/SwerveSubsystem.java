@@ -453,10 +453,6 @@ public class SwerveSubsystem extends SubsystemBase
     swerveDrive.zeroGyro();
   }
 
-  public void negativeZeroGyro()
-  {
-    swerveDrive.setGyro(new Rotation3d(0, 0, Math.toRadians(-180)));
-  }
 
   /**
    * Sets the drive motors to brake/coast mode.
