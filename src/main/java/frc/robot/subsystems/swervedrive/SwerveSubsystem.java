@@ -65,7 +65,6 @@ public class SwerveSubsystem extends SubsystemBase
   
   private final SwerveDrive swerveDrive;
   private final PhotonCameraWrapper photon = new PhotonCameraWrapper();
-  private final Pigeon2 gyro = new Pigeon2(13);
   private double absoluteXfromSpeaker, absoluteYfromSpeaker, absoluteSqXfromSpeaker, absoluteSqYfromSpeaker,absoluteAddFromSpeaker,absoluteDistFromSpeaker, sqrtOfDist, logOfSqrtofDist;
  //public final DifferentialDrivePoseEstimator m_PoseEstimator;
   /**
@@ -349,22 +348,7 @@ public class SwerveSubsystem extends SubsystemBase
             });
             String table = "Drive/";
       Pose2d pose = getPose();
-    absoluteXfromSpeaker = pose.getX() + .04;
-    absoluteYfromSpeaker = Math.abs(pose.getY() - 5.55);
-    absoluteSqXfromSpeaker = Math.pow(absoluteXfromSpeaker, 2);
-    absoluteSqYfromSpeaker = Math.pow(absoluteYfromSpeaker, 2);
-    absoluteAddFromSpeaker = absoluteSqXfromSpeaker+absoluteSqYfromSpeaker;
-    absoluteDistFromSpeaker = Math.sqrt(absoluteAddFromSpeaker);
-    sqrtOfDist = Math.sqrt(absoluteDistFromSpeaker);
-    logOfSqrtofDist = Math.log(sqrtOfDist);
-      SmartDashboard.putNumber(table + "Absolute X from Speaker", absoluteXfromSpeaker);
-      SmartDashboard.putNumber(table + "Absolute Y from Speaker", absoluteYfromSpeaker);
-      SmartDashboard.putNumber(table + "Absolute X^2 from Speaker", absoluteSqXfromSpeaker);
-      SmartDashboard.putNumber(table + "Absolute Y^2 from Speaker", absoluteSqYfromSpeaker);
-      SmartDashboard.putNumber(table + "Absolute X^2 + Y^2 from Speaker", absoluteAddFromSpeaker);
-      SmartDashboard.putNumber(table + "Absolute Sqrt(X^2 + Y^2) from Speaker", absoluteDistFromSpeaker);
-      SmartDashboard.putNumber(table + "Square Root of Dist", sqrtOfDist);
-      SmartDashboard.putNumber(table + "Log of Square Root of Dist", logOfSqrtofDist);
+
       SmartDashboard.putNumber(table + "X", pose.getX());
       SmartDashboard.putNumber(table + "Y", pose.getY());
       SmartDashboard.putNumber(table + "Heading", pose.getRotation().getDegrees());
