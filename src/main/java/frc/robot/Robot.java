@@ -30,7 +30,7 @@ public class Robot extends TimedRobot
   private double podiumRadians;
   private double absoluteDistanceFromSpeaker;
   private RobotContainer m_robotContainer;
-  private PhotonCameraWrapper photon = new PhotonCameraWrapper();  private boolean lightBreak;
+  private boolean lightBreak;
   
 
 
@@ -74,7 +74,6 @@ public class Robot extends TimedRobot
   
   {
 
-
          //swerveDrive.updateOdometry();
 
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
@@ -109,7 +108,7 @@ public class Robot extends TimedRobot
   public void autonomousInit()
   {
     m_robotContainer.setMotorBrake(true);
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = m_robotContainer.getAuto();
     m_robotContainer.Fafnir.store();
     boolean isAutoDone = false;
     boolean alreadyBroken = true;
@@ -121,7 +120,7 @@ public class Robot extends TimedRobot
   @Override
   public void autonomousPeriodic()
   {
-    System.out.println("Tets");
+
     if (m_autonomousCommand != null  && !isAutoDone) {
       m_autonomousCommand.schedule();
       isAutoDone=true;
@@ -144,6 +143,7 @@ public class Robot extends TimedRobot
   @Override
   public void teleopInit()
   {
+      m_robotContainer.Fafnir.store();
 
     m_robotContainer.setMotorBrake(true);
     m_robotContainer.resetPID();
@@ -160,6 +160,7 @@ public class Robot extends TimedRobot
   @Override
   public void teleopPeriodic()
   {
+    isAutoDone = false;
   }
 
   @Override

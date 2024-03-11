@@ -344,7 +344,7 @@ public class SwerveSubsystem extends SubsystemBase
                 var estStdDevs = photon.getEstimationStdDevs(estPose);
 
                   swerveDrive.addVisionMeasurement(
-                 estimatedRoboPose.estimatedPose.toPose2d(), estimatedRoboPose.timestampSeconds, estStdDevs);
+                new Pose2d(new Translation2d(estimatedRoboPose.estimatedPose.toPose2d().getX(), estimatedRoboPose.estimatedPose.toPose2d().getY()), getPose().getRotation()), estimatedRoboPose.timestampSeconds, estStdDevs);
             });
             String table = "Drive/";
       Pose2d pose = getPose();

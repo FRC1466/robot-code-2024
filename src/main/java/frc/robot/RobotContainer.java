@@ -26,7 +26,6 @@ import frc.robot.Constants.DragonheadConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoMap;
 import frc.robot.commands.SuperStructure;
-import frc.robot.subsystems.Manipulator.BlinkinLights;
 import frc.robot.subsystems.Manipulator.Dragonhead;
 import frc.robot.subsystems.Manipulator.EndEffector;
 import frc.robot.subsystems.Manipulator.Indexer;
@@ -39,6 +38,7 @@ import java.io.File;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathConstraints;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -53,9 +53,10 @@ public class RobotContainer
   private double absoluteDistanceFromSpeaker;
   private double podiumRadians;
   private SendableChooser<Command> chooser = new SendableChooser<>();
+   // The robot's subsystems and commands are defined here...
   public final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve"));
-  //public final BlinkinLights lights = new BlinkinLights();               
+                                                                        
   private final EndEffector outTake = new EndEffector();
   private final Intake intake = new Intake();   
   private final Indexer index = new Indexer();  
@@ -82,9 +83,10 @@ public class RobotContainer
    
     // Configure the trigger bindings
    
-    NamedCommands.registerCommand("Intake", index.launch().alongWith(intake.intake()).alongWith(Commands.waitSeconds(2)).andThen(intake.stop()).andThen(index.stop()));
-    NamedCommands.registerCommand("Shoot", outTake.shoot().alongWith(Commands.waitSeconds(.6).andThen(index.outtake())));
-    
+    NamedCommands.registerCommand("Intake", index.launch().alongWith(intake.intake()).alongWith(Commands.waitSeconds(1.5)).andThen(intake.stop()).andThen(index.stop()));
+    NamedCommands.registerCommand("Shoot", outTake.shoot().alongWith(Commands.waitSeconds(.3).andThen(index.outtake())));
+    NamedCommands.registerCommand("Raise Arm", Fafnir.podium());
+    NamedCommands.registerCommand("Lower Arm", Fafnir.store());
     NamedCommands.registerCommand("StopAll", outTake.stop().alongWith(index.stop()).alongWith(intake.stop()));
     configureBindings();
      PortForwarder.add(5800, "photonvision.local", 5800);
@@ -141,23 +143,18 @@ public void initializeChooser(){
   chooser.addOption(
         "4 Piece Auto",
        new PathPlannerAuto("4 Piece Auto SMR"));
-  chooser.addOption("Shoot", new PathPlannerAuto("just shoot"));
-  chooser.addOption("2 Piece Bottom Far", new PathPlannerAuto("2 piece far bot"));
-  chooser.addOption("2 Piece Bottom", new PathPlannerAuto("2 piece auto - bot"));
+  chooser.addOption("Taxi", new PathPlannerAuto("Taxi"));
   chooser.addOption("2 Piece Top",new PathPlannerAuto("2 piece auto - top"));
   chooser.addOption("2 Piece Center", new PathPlannerAuto("2 piece auto - center"));
   chooser.addOption("Shoot and leave( GOOD LUCK HENRY!! BREAK IT RIDGE!!!)", new PathPlannerAuto("Shoot and back"));
   SmartDashboard.putData("CHOOSE", chooser);
 }
-
 public void resetPID(){
   Fafnir.setArmP(Constants.DragonheadConstants.dragonPosition.P);
   Fafnir.setPeakOutput(Constants.DragonheadConstants.dragonPosition.peakOutput);
 }
 
-public Command getAuto(){
-  return chooser.getSelected();
-}
+
 
 public Command backPID(){
   return runOnce(() -> resetPID());
@@ -170,23 +167,26 @@ public Command backPID(){
   {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
-
-
     Trigger indexBeamBreak = new Trigger(() -> index.getIndexerBeamBreak());
     driverController.povDown().onTrue(Commands.runOnce(drivebase::zeroGyro));
   
+  
+    
+    
     
     driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(0.4).andThen(index.outtake()))).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
     
+    //driverController.button(1).onTrue(outTake.shoot()).onFalse(outTake.stop());`
+    //intake
+    // 
     driverController.button(3).and(indexBeamBreak).whileTrue(intake.intake().alongWith(index.launch())).onFalse(intake.stop().alongWith(index.stop()));
     driverController.button(8).whileTrue(Fafnir.podium()).onFalse(Fafnir.store());
 
     //climb
     driverController.button(6).onTrue(Fafnir.amp()).onFalse(Fafnir.setArmP(.4).andThen(Fafnir.setPeakOutput(.5)).andThen(Fafnir.store()).alongWith(Commands.waitSeconds(.5)).andThen(Fafnir.setPeakOutput(.8).andThen(Fafnir.setArmP(.7)).andThen(Fafnir.store())));
-    //.andThen(Fafnir.totalArmBrake())));
-    //.andThen(Fafnir.podium()));
 
     driverController.button(7).onTrue(outTake.drop().alongWith(index.drop()).alongWith(intake.reverseIntake())).onFalse(outTake.stop().alongWith(index.stop()).alongWith(intake.stop()));
+   // driverController.button(8).whileTrue(intake.intake().alongWith(index.outtake())).onFalse(intake.stop().alongWith(index.stop()));
 
     //make an amp shoot command eventually
    driverController.button(5).onTrue(Fafnir.store().andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
@@ -198,10 +198,8 @@ public Command backPID(){
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }
 
- public Command getAutonomousCommand(){
 
-  return new PathPlannerAuto("4 Piece Auto");
-  }
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -217,5 +215,8 @@ public Command backPID(){
     drivebase.setMotorBrake(brake);
   }
 
+  public Command getAuto(){
+    return chooser.getSelected();
+  }
 
 }
