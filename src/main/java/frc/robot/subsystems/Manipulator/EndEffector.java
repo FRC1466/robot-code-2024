@@ -19,6 +19,7 @@ public class EndEffector extends SubsystemBase {
   private final LinearFilter currentFilter = LinearFilter.movingAverage(10);
   private double filteredCurrentLeft;
   public double filteredCurrentRight;
+  private double shootVolts =-8;
 
 
 
@@ -32,6 +33,9 @@ public class EndEffector extends SubsystemBase {
   public void setVoltage(double outputVoltage){
    shooterMotorLeft.setVoltage(outputVoltage);
    shooterMotorRight.setVoltage(outputVoltage);
+  }
+  public void setShooterVolts(double volts){
+shootVolts=volts;
   }
   public Command stop() {
     return runOnce(() -> setVoltage(0)); 

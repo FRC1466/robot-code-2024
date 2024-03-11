@@ -34,6 +34,7 @@ public class Dragonhead extends SubsystemBase{
   private double armPID_output;
   private double absoluteDistanceFromSpeaker;
   private double podiumRadians;
+  private double testRadians = .51;
   private Rotation2d localSetpoint;
   private DoubleSupplier overrideFeedforward = () -> 0.0;
   private boolean disabled = false;
@@ -158,6 +159,19 @@ public class Dragonhead extends SubsystemBase{
   public Command podium() {
     return run(() -> setGoal(Rotation2d.fromRadians(podiumRadians)))
        .andThen(holdUntilSetpoint());
+  }
+
+  public void increasePod(){
+    testRadians+=.01;
+  }  
+  public void decreasePod(){
+    testRadians-=.01;
+  }
+    public void decreasePodHalf(){
+    testRadians-=.001;
+  }
+    public void increasePodHalf(){
+    testRadians+=.001;
   }
 
 

@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DragonheadConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.Outtake;
 import frc.robot.commands.AutoMap;
 import frc.robot.commands.SuperStructure;
 import frc.robot.subsystems.Manipulator.Dragonhead;
@@ -32,6 +33,7 @@ import frc.robot.subsystems.Manipulator.Indexer;
 import frc.robot.subsystems.Manipulator.Intake;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
+import static edu.wpi.first.wpilibj2.command.Commands.run;
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 
 import java.io.File;
@@ -52,6 +54,7 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private double absoluteDistanceFromSpeaker;
   private double podiumRadians;
+  private boolean autoControl = false;
   private SendableChooser<Command> chooser = new SendableChooser<>();
    // The robot's subsystems and commands are defined here...
   public final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
@@ -60,7 +63,9 @@ public class RobotContainer
   private final EndEffector outTake = new EndEffector();
   private final Intake intake = new Intake();   
   private final Indexer index = new Indexer();  
-  public final Dragonhead Fafnir = new Dragonhead();  
+  CommandJoystick buttonBox = new CommandJoystick(5);
+  public final Dragonhead Fafnir = new Dragonhead();
+  private Command driveFieldOrientedAnglularVelocity;
   
 
   /*private final SuperStructure superstructure = new SuperStructure(outTake, Fafnir, intake, index);
@@ -105,10 +110,21 @@ public class RobotContainer
     // controls are front-left positive
     // left stick controls translation
     // right stick controls the angular velocity of the robot
-    Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
+
+
+              Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
         () -> MathUtil.applyDeadband(driverController.getY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(driverController.getX(), OperatorConstants.LEFT_X_DEADBAND),
         () -> MathUtil.applyDeadband(driverController.getZ()*1.15, .1)).withName("Default Drive Command");
+        if(autoControl){
+                    driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
+        () -> MathUtil.applyDeadband(driverController.getY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(driverController.getX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> MathUtil.applyDeadband(driverController.getZ()*.05,.1)).withName("Default Drive Command");
+
+        }
+        
+      
 
 
 
@@ -126,6 +142,11 @@ public class RobotContainer
 public Command intakeNote(){
   return intake.intake().alongWith(index.outtake());
 }
+
+/* funny voltage set
+public Command setVoltage(){
+  return runOnce(()-> outTake.setShooterVolts(-(driverController.getRawAxis(3)+1)*4));
+}*/
 
 public void stopAll(){
  intake.setVoltage(0);
@@ -174,7 +195,7 @@ public Command backPID(){
     
     
     
-    driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(0.4).andThen(index.outtake()))).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
+    driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(0.5).andThen(index.outtake()))).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
     
     //driverController.button(1).onTrue(outTake.shoot()).onFalse(outTake.stop());`
     //intake
@@ -183,6 +204,10 @@ public Command backPID(){
     driverController.button(8).whileTrue(Fafnir.podium()).onFalse(Fafnir.store());
 
     //climb
+    buttonBox.button(1).onTrue(runOnce(()-> Fafnir.increasePod()));
+      buttonBox.button(2).onTrue(runOnce(()-> Fafnir.decreasePod()));
+        buttonBox.button(4).onTrue(runOnce(()-> Fafnir.increasePodHalf()));
+        buttonBox.button(5).onTrue(runOnce(()-> Fafnir.decreasePodHalf()));
     driverController.button(6).onTrue(Fafnir.amp()).onFalse(Fafnir.setArmP(.4).andThen(Fafnir.setPeakOutput(.5)).andThen(Fafnir.store()).alongWith(Commands.waitSeconds(.5)).andThen(Fafnir.setPeakOutput(.8).andThen(Fafnir.setArmP(.7)).andThen(Fafnir.store())));
 
     driverController.button(7).onTrue(outTake.drop().alongWith(index.drop()).alongWith(intake.reverseIntake())).onFalse(outTake.stop().alongWith(index.stop()).alongWith(intake.stop()));
