@@ -32,6 +32,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -322,15 +323,25 @@ public class SwerveSubsystem extends SubsystemBase
   }
   public double thetaAngle(){
           Pose2d pose = getPose();
+          if(DriverStation.getAlliance().get() == Alliance.Blue){
+
     absoluteXfromSpeaker = pose.getX() + .04;
+    absoluteYfromSpeaker = Math.abs(pose.getY() - 5.55);}
+    else{
+      absoluteXfromSpeaker = pose.getX() - 16.58;
     absoluteYfromSpeaker = Math.abs(pose.getY() - 5.55);
+    }
     absoluteSqXfromSpeaker = Math.pow(absoluteXfromSpeaker, 2);
     absoluteSqYfromSpeaker = Math.pow(absoluteYfromSpeaker, 2);
     absoluteAddFromSpeaker = absoluteSqXfromSpeaker+absoluteSqYfromSpeaker;
     absoluteDistFromSpeaker = Math.sqrt(absoluteAddFromSpeaker);
     sqrtOfDist = Math.sqrt(absoluteDistFromSpeaker);
     logOfSqrtofDist = Math.log(sqrtOfDist);
-    return logOfSqrtofDist;
+    if(logOfSqrtofDist> Math.PI/2){
+      return Math.PI/2;
+    }
+    else{
+      return logOfSqrtofDist;}
   }
   @Override
   public void periodic() {

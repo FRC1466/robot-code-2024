@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.Manipulator.BlinkinLights.BlinkinLedMode;
 import frc.robot.subsystems.swervedrive.PhotonCameraWrapper;
 
 import java.io.File;
@@ -81,7 +82,7 @@ public class Robot extends TimedRobot
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
-    m_robotContainer.Fafnir.setPodiumRadians(m_robotContainer.drivebase.thetaAngle());
+    m_robotContainer.Fafnir.setVisionRadians(m_robotContainer.drivebase.thetaAngle());
     CommandScheduler.getInstance().run();
   }
 
@@ -99,6 +100,7 @@ public class Robot extends TimedRobot
   {
     m_robotContainer.backPID();
     m_robotContainer.resetPID();
+    m_robotContainer.lights.setAllianceColor();
     
   }
 
@@ -161,6 +163,12 @@ public class Robot extends TimedRobot
   @Override
   public void teleopPeriodic()
   {
+    if(!m_robotContainer.beamBreak()){
+      m_robotContainer.lights.setMode(BlinkinLedMode.FIXED_RAINBOW_PARTY);
+    }
+    else{
+      m_robotContainer.lights.setMode(BlinkinLedMode.SOLID_BLACK);
+    }
     isAutoDone = false;
   }
 

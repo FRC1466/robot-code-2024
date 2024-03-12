@@ -27,10 +27,12 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.Outtake;
 import frc.robot.commands.AutoMap;
 import frc.robot.commands.SuperStructure;
+import frc.robot.subsystems.Manipulator.BlinkinLights;
 import frc.robot.subsystems.Manipulator.Dragonhead;
 import frc.robot.subsystems.Manipulator.EndEffector;
 import frc.robot.subsystems.Manipulator.Indexer;
 import frc.robot.subsystems.Manipulator.Intake;
+import frc.robot.subsystems.Manipulator.BlinkinLights.BlinkinLedMode;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 import static edu.wpi.first.wpilibj2.command.Commands.run;
@@ -63,6 +65,7 @@ public class RobotContainer
   private final EndEffector outTake = new EndEffector();
   private final Intake intake = new Intake();   
   private final Indexer index = new Indexer();  
+  public final BlinkinLights lights = new BlinkinLights();
   CommandJoystick buttonBox = new CommandJoystick(5);
   public final Dragonhead Fafnir = new Dragonhead();
   private Command driveFieldOrientedAnglularVelocity;
@@ -186,28 +189,28 @@ public Command backPID(){
   
   private void configureBindings()
   {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-
+    
+    // Creating trigger for beambreak
     Trigger indexBeamBreak = new Trigger(() -> index.getIndexerBeamBreak());
+    // Reset Gyro
     driverController.povDown().onTrue(Commands.runOnce(drivebase::zeroGyro));
-  
-  
-    
-    
-    
+    // Shoot Command - Runs up shooter falcons, then feeds them the note.
     driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(0.5).andThen(index.outtake()))).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
-    
-    //driverController.button(1).onTrue(outTake.shoot()).onFalse(outTake.stop());`
-    //intake
-    // 
+    // Raise to Vision Angle
+    driverController.button(2).whileTrue(Fafnir.visionAngle()).onFalse(Fafnir.store());
+    // Intake Command - run intake and indexer motors while the beam break is unbroken
     driverController.button(3).and(indexBeamBreak).whileTrue(intake.intake().alongWith(index.launch())).onFalse(intake.stop().alongWith(index.stop()));
-    driverController.button(8).whileTrue(Fafnir.podium()).onFalse(Fafnir.store());
+     // Amp Command
+    driverController.button(4).onTrue(Fafnir.amp()).onFalse(outTake.ampShoot().andThen(index.outtake()).andThen(Commands.waitSeconds(.5)).andThen(outTake.stop()).andThen(index.stop()).andThen(Fafnir.setArmP(.2)).andThen(Fafnir.setPeakOutput(.2)).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
+    // Raise to Podium - raises the arm to the podium position and then places it back in the stored position
+    driverController.button(8).onTrue(Fafnir.podium()).onFalse(Fafnir.store());
 
     //climb
-    buttonBox.button(1).onTrue(runOnce(()-> Fafnir.increasePod()));
-      buttonBox.button(2).onTrue(runOnce(()-> Fafnir.decreasePod()));
-        buttonBox.button(4).onTrue(runOnce(()-> Fafnir.increasePodHalf()));
-        buttonBox.button(5).onTrue(runOnce(()-> Fafnir.decreasePodHalf()));
+
+    buttonBox.button(2).onTrue(runOnce(()-> lights.setMode(BlinkinLedMode.FIXED_RAINBOW_PARTY)));
+    buttonBox.button(1).onTrue(runOnce(()-> lights.setMode(BlinkinLedMode.TWO_CHASE)));
+    buttonBox.button(3).onTrue(runOnce(()-> lights.setMode(BlinkinLedMode.SOLID_WHITE)));
+
     driverController.button(6).onTrue(Fafnir.amp()).onFalse(Fafnir.setArmP(.4).andThen(Fafnir.setPeakOutput(.5)).andThen(Fafnir.store()).alongWith(Commands.waitSeconds(.5)).andThen(Fafnir.setPeakOutput(.8).andThen(Fafnir.setArmP(.7)).andThen(Fafnir.store())));
 
     driverController.button(7).onTrue(outTake.drop().alongWith(index.drop()).alongWith(intake.reverseIntake())).onFalse(outTake.stop().alongWith(index.stop()).alongWith(intake.stop()));
@@ -216,7 +219,6 @@ public Command backPID(){
     //make an amp shoot command eventually
    driverController.button(5).onTrue(Fafnir.store().andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
 //Amp
-  driverController.button(2).onTrue(Fafnir.amp()).onFalse(outTake.ampShoot().andThen(index.outtake()).andThen(Commands.waitSeconds(.5)).andThen(outTake.stop()).andThen(index.stop()).andThen(Fafnir.setArmP(.2)).andThen(Fafnir.setPeakOutput(.2)).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
 
     
  

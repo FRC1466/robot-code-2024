@@ -33,7 +33,7 @@ public class Dragonhead extends SubsystemBase{
   private double armPID_P;
   private double armPID_output;
   private double absoluteDistanceFromSpeaker;
-  private double podiumRadians;
+  private double visionRadians;
   private double testRadians = .51;
   private Rotation2d localSetpoint;
   private DoubleSupplier overrideFeedforward = () -> 0.0;
@@ -89,8 +89,8 @@ public class Dragonhead extends SubsystemBase{
   public void simulationPeriodic() {
     //sim.update(armMotor.get());
   }
-  public void setPodiumRadians(double rad){
-    podiumRadians = rad;
+  public void setVisionRadians(double rad){
+    visionRadians = rad;
   }
 
 
@@ -157,24 +157,14 @@ public class Dragonhead extends SubsystemBase{
   }
 
   public Command podium() {
-    return run(() -> setGoal(Rotation2d.fromRadians(podiumRadians)))
+    return run(() -> setGoal(Rotation2d.fromRadians(DragonheadConstants.podiumRadians)))
        .andThen(holdUntilSetpoint());
   }
 
-  public void increasePod(){
-    testRadians+=.01;
-  }  
-  public void decreasePod(){
-    testRadians-=.01;
+  public Command visionAngle() {
+    return run(() -> setGoal(Rotation2d.fromRadians(visionRadians)))
+      .andThen(holdUntilSetpoint());
   }
-    public void decreasePodHalf(){
-    testRadians-=.001;
-  }
-    public void increasePodHalf(){
-    testRadians+=.001;
-  }
-
-
   
 
   public Command amp() {
@@ -185,7 +175,7 @@ public class Dragonhead extends SubsystemBase{
 
   public Command store() {
     return runOnce(() -> setGoal(storedPosRad))
-       .andThen(holdUntilSetpoint());
+       .andThen(Commands.waitSeconds(1)).andThen(runOnce(()->setMotor(0)));
   }
 
   public void setStoreSetpoint() {
@@ -240,7 +230,7 @@ public class Dragonhead extends SubsystemBase{
    setArmHold();
 
     SmartDashboard.putData(absoluteArmEncoder);
-    SmartDashboard.putNumber("PodiumRadians", podiumRadians);
+    SmartDashboard.putNumber("Vision Radians", visionRadians);
     SmartDashboard.putNumber("Arm Raw Absolute Encoder", absoluteArmEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("Arm Processed Absolute Encoder", getPosition().getRadians());
     SmartDashboard.putNumber("Get Shifted Absolute Position", getShiftedAbsoluteDistance().getRadians());
