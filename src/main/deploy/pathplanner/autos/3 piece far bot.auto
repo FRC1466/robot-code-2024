@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.48,
-      "y": 5.58
+      "x": 0.8327743151212798,
+      "y": 4.397002070357417
     },
-    "rotation": 0
+    "rotation": -59.93000000000001
   },
   "command": {
     "type": "sequential",
@@ -24,7 +24,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.35
+                  "waitTime": 0.4
                 }
               },
               {
@@ -39,7 +39,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left Note from Front Speaker"
+            "pathName": "Far Right Note from right Speaker"
           }
         },
         {
@@ -70,7 +70,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Middle Note from Front Speaker"
+            "pathName": "Copy of Far Right Note from right Speaker"
           }
         },
         {
@@ -93,55 +93,6 @@
                 "type": "named",
                 "data": {
                   "name": "StopAll"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "4 piece bot SMR"
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Raise Arm"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.3
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Shoot"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.4
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "StopAll"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Lower Arm"
                 }
               }
             ]

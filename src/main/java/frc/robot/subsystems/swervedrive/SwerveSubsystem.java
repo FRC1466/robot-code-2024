@@ -336,9 +336,12 @@ public class SwerveSubsystem extends SubsystemBase
     absoluteAddFromSpeaker = absoluteSqXfromSpeaker+absoluteSqYfromSpeaker;
     absoluteDistFromSpeaker = Math.sqrt(absoluteAddFromSpeaker);
     sqrtOfDist = Math.sqrt(absoluteDistFromSpeaker);
-    logOfSqrtofDist = Math.log(sqrtOfDist);
+    logOfSqrtofDist = Math.log(sqrtOfDist)-.05;
     if(logOfSqrtofDist> Math.PI/2){
       return Math.PI/2;
+    }
+    else if(logOfSqrtofDist < 0) {
+      return 0;
     }
     else{
       return logOfSqrtofDist;}
