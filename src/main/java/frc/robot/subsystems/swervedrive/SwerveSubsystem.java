@@ -14,6 +14,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+import com.reduxrobotics.sensors.canandcolor.CanandcolorProximityConfig.SamplingPeriod;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
@@ -33,6 +34,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -323,20 +325,33 @@ public class SwerveSubsystem extends SubsystemBase
   }
   public double thetaAngle(){
           Pose2d pose = getPose();
-          if(DriverStation.getAlliance().get() == Alliance.Blue){
-
-    absoluteXfromSpeaker = pose.getX() + .04;
-    absoluteYfromSpeaker = Math.abs(pose.getY() - 5.55);}
-    else{
-      absoluteXfromSpeaker = pose.getX() - 16.58;
-    absoluteYfromSpeaker = Math.abs(pose.getY() - 5.55);
+          int isBlue = 0;
+    if(DriverStation.getAlliance().get() == Alliance.Blue){
+      absoluteXfromSpeaker = Math.abs(pose.getX() );
+      absoluteYfromSpeaker = Math.abs(pose.getY() - 5.55);
+      isBlue = 1;
+   }
+    else {
+      absoluteXfromSpeaker = Math.abs(pose.getX());
+      absoluteYfromSpeaker = Math.abs(pose.getY() - 5.55);
+      isBlue = 2;
     }
+    SmartDashboard.putNumber("Is Blue", isBlue);
+   
     absoluteSqXfromSpeaker = Math.pow(absoluteXfromSpeaker, 2);
     absoluteSqYfromSpeaker = Math.pow(absoluteYfromSpeaker, 2);
     absoluteAddFromSpeaker = absoluteSqXfromSpeaker+absoluteSqYfromSpeaker;
     absoluteDistFromSpeaker = Math.sqrt(absoluteAddFromSpeaker);
     sqrtOfDist = Math.sqrt(absoluteDistFromSpeaker);
     logOfSqrtofDist = Math.log(sqrtOfDist)-.05;
+      SmartDashboard.putNumber("AbsX", absoluteXfromSpeaker);
+      SmartDashboard.putNumber("AbsY", absoluteYfromSpeaker);
+       SmartDashboard.putNumber("Abs^2X", absoluteSqXfromSpeaker);
+        SmartDashboard.putNumber("Abs^2Y", absoluteSqYfromSpeaker);
+         SmartDashboard.putNumber("absAdd", absoluteAddFromSpeaker);
+          SmartDashboard.putNumber("absDist", absoluteDistFromSpeaker);
+           SmartDashboard.putNumber("sqrtOfDist", sqrtOfDist);
+            SmartDashboard.putNumber("Log", logOfSqrtofDist);
     if(logOfSqrtofDist> Math.PI/2){
       return Math.PI/2;
     }
@@ -348,6 +363,7 @@ public class SwerveSubsystem extends SubsystemBase
   }
   @Override
   public void periodic() {
+    if(DriverStation.isTeleop()){
     var visionEst = photon.getEstimatedGlobalPose(); 
  
    visionEst.ifPresent(
@@ -366,6 +382,7 @@ public class SwerveSubsystem extends SubsystemBase
       SmartDashboard.putNumber(table + "X", pose.getX());
       SmartDashboard.putNumber(table + "Y", pose.getY());
       SmartDashboard.putNumber(table + "Heading", pose.getRotation().getDegrees());
+          }
   }
 
     

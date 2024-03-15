@@ -85,7 +85,7 @@ public final class Constants
       dutyCyclePort = 1;
       public static final Gains dragonPosition = new Gains(.695,.004,0.0032,0.005,0,0.8);
       public static final double restRadians = .0;
-      public static final double ampRadians = (7*Math.PI/12)+.3;
+      public static final double ampRadians = (7*Math.PI/12)+.1;
       public static final double maxRadians = (7*Math.PI/12)+.7;
       public static final double podiumRadians = .485;//not podium, just
       public static final double gravityFF = 0.02;

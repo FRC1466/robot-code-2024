@@ -94,13 +94,14 @@ public class RobotContainer
     NamedCommands.registerCommand("Intake", index.launch().alongWith(intake.intake()).alongWith(Commands.waitSeconds(1.5)).andThen(intake.stop()).andThen(index.stop()));
     NamedCommands.registerCommand("Shoot", outTake.shoot().alongWith(Commands.waitSeconds(.3)).andThen(index.outtake()));
     NamedCommands.registerCommand("Raise Arm To Vision",null );
+    
     // Fafnir.visionAngle());
     NamedCommands.registerCommand("Shoot and Raise", outTake.shoot().andThen(Fafnir.visionAngle()).alongWith(Commands.waitSeconds(.3)).andThen(index.outtake()).alongWith(Commands.waitSeconds(.4)).andThen(Fafnir.store()));
     NamedCommands.registerCommand("Raise Arm to Podium", Fafnir.podium());
     NamedCommands.registerCommand("Lower Arm", Fafnir.store());
     NamedCommands.registerCommand("StopAll", outTake.stop().alongWith(index.stop()).alongWith(intake.stop()));
     configureBindings();
-     PortForwarder.add(5800, "photonvision.local", 5800);
+     PortForwarder.add(1183, "photonvision.local", 1184);
 
     initializeChooser();
 
@@ -173,6 +174,7 @@ public void initializeChooser(){
   chooser.addOption("Taxi", new PathPlannerAuto("Taxi"));
   chooser.addOption("5 Piece Auto", new PathPlannerAuto("Copy of 5 piece Auto"));
   chooser.addOption("2 Piece Top",new PathPlannerAuto("2 piece auto - top"));
+  chooser.addOption("3 Piece Auto Far", new PathPlannerAuto("3 piece far bot"));
   chooser.addOption("2 Piece Center", new PathPlannerAuto("2 piece auto - center"));
   chooser.addOption("4 Piece Auto", new PathPlannerAuto("4 Piece Auto"));
   chooser.addOption("Shoot and leave( GOOD LUCK HENRY!! BREAK IT RIDGE!!!)", new PathPlannerAuto("Shoot and back"));

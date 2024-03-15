@@ -32,6 +32,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
@@ -65,10 +66,13 @@ public class PhotonCameraWrapper {
     public PhotonCameraWrapper() {
         camera = new PhotonCamera("Global_Shutter_Camera");
         aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-        aprilTagFieldLayout.setOrigin(
-            DriverStation.getAlliance().get() == Alliance.Blue
-            ? OriginPosition.kBlueAllianceWallRightSide
-            : OriginPosition.kRedAllianceWallRightSide);
+        if(DriverStation.getAlliance().get() == Alliance.Blue){
+            aprilTagFieldLayout.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
+        }
+        else {
+            aprilTagFieldLayout.setOrigin(OriginPosition.kRedAllianceWallRightSide);
+        }
+
         var kRobotToCam = new Transform3d(Constants.cameraTranslation, Constants.cameraRotation);
         photonEstimator =
                 new PhotonPoseEstimator(
@@ -100,6 +104,10 @@ public class PhotonCameraWrapper {
 
     public PhotonPipelineResult getLatestResult() {
         return camera.getLatestResult();
+    }
+
+    public Optional<Pose3d> AprilTagPose(int apriltagNum){
+        return aprilTagFieldLayout.getTagPose(apriltagNum);
     }
 
     /**
