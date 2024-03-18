@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.net.PortForwarder;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
@@ -66,7 +67,7 @@ public class RobotContainer
   private final Intake intake = new Intake();   
   private final Indexer index = new Indexer();  
   public final BlinkinLights lights = new BlinkinLights();
-  CommandJoystick buttonBox = new CommandJoystick(5);
+ 
   public final Dragonhead Fafnir = new Dragonhead();
   private Command driveFieldOrientedAnglularVelocity;
   
@@ -91,11 +92,12 @@ public class RobotContainer
    
     // Configure the trigger bindings
    
-    NamedCommands.registerCommand("Intake", index.launch().alongWith(intake.intake()).alongWith(Commands.waitSeconds(1.5)).andThen(intake.stop()).andThen(index.stop()));
+    NamedCommands.registerCommand("Intake", index.launch().alongWith(intake.intake()).alongWith(Commands.waitSeconds(2.5)).andThen(intake.stop()).andThen(index.stop()));
     NamedCommands.registerCommand("Shoot", outTake.shoot().alongWith(Commands.waitSeconds(.3)).andThen(index.outtake()));
-    NamedCommands.registerCommand("Raise Arm To Vision",null );
+    NamedCommands.registerCommand("Raise Arm To Vision",Fafnir.visionAngle() );
     
     // Fafnir.visionAngle());
+  
     NamedCommands.registerCommand("Shoot and Raise", outTake.shoot().andThen(Fafnir.visionAngle()).alongWith(Commands.waitSeconds(.3)).andThen(index.outtake()).alongWith(Commands.waitSeconds(.4)).andThen(Fafnir.store()));
     NamedCommands.registerCommand("Raise Arm to Podium", Fafnir.podium());
     NamedCommands.registerCommand("Lower Arm", Fafnir.store());
@@ -154,7 +156,14 @@ public Command intakeNote(){
 public Command setVoltage(){
   return runOnce(()-> outTake.setShooterVolts(-(driverController.getRawAxis(3)+1)*4));
 }*/
-
+public void checkCommandDSandFMSWork(){
+  if(DriverStation.isFMSAttached() || DriverStation.isDSAttached()){
+    SmartDashboard.putBoolean("Driver Station or FMS are Connected", true);
+  }
+  else{
+    SmartDashboard.putBoolean("Driver Station or FMS are Connected", false);
+  }
+}
 public void stopAll(){
  intake.setVoltage(0);
  index.setRollers(0);
@@ -171,6 +180,7 @@ public void initializeChooser(){
  /*  chooser.addOption(
         "4 Piece Auto",
        new PathPlannerAuto("4 Piece Auto SMR"));*/
+  chooser.addOption("Amp Test", new PathPlannerAuto("amp test"));
   chooser.addOption("Taxi", new PathPlannerAuto("Taxi"));
   chooser.addOption("5 Piece Auto", new PathPlannerAuto("Copy of 5 piece Auto"));
   chooser.addOption("2 Piece Top",new PathPlannerAuto("2 piece auto - top"));
@@ -204,25 +214,24 @@ public Command backPID(){
     // Shoot Command - Runs up shooter falcons, then feeds them the note.
     driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(0.5).andThen(index.outtake()))).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
     // Raise to Vision Angle
-    driverController.button(2).whileTrue(Fafnir.visionAngle()).onFalse(Fafnir.store());
+    driverController.button(8).whileTrue(Fafnir.visionAngle()).onFalse(Fafnir.store());
     // Intake Command - run intake and indexer motors while the beam break is unbroken
-    driverController.button(3).and(indexBeamBreak).whileTrue(intake.intake().alongWith(index.launch())).onFalse(intake.stop().alongWith(index.stop()));
+    driverController.button(10).and(indexBeamBreak).whileTrue(intake.intake().alongWith(index.launch())).onFalse(intake.stop().alongWith(index.stop()));
      // Amp Command
-    driverController.button(4).onTrue(Fafnir.amp()).onFalse(outTake.ampShoot().andThen(index.outtake()).andThen(Commands.waitSeconds(.5)).andThen(outTake.stop()).andThen(index.stop()).andThen(Fafnir.setArmP(.2)).andThen(Fafnir.setPeakOutput(.2)).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
+    driverController.button(9).onTrue(Fafnir.amp()).onFalse(outTake.ampShoot().andThen(index.outtake()).andThen(Commands.waitSeconds(.5)).andThen(outTake.stop()).andThen(index.stop()).andThen(Fafnir.setArmP(.2)).andThen(Fafnir.setPeakOutput(.2)).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
     // Raise to Podium - raises the arm to the podium position and then places it back in the stored position
     driverController.button(8).onTrue(Fafnir.podium()).onFalse(Fafnir.store());
 
     //climb
 
-    buttonBox.button(2).onTrue(runOnce(()-> lights.setMode(BlinkinLedMode.FIXED_RAINBOW_PARTY)));
-    buttonBox.button(1).onTrue(runOnce(()-> lights.setMode(BlinkinLedMode.TWO_CHASE)));
-    buttonBox.button(3).onTrue(runOnce(()-> lights.setMode(BlinkinLedMode.SOLID_WHITE)));
+
 
     driverController.button(6).onTrue(Fafnir.amp()).onFalse(Fafnir.setArmP(.4).andThen(Fafnir.setPeakOutput(.5)).andThen(Fafnir.store()).alongWith(Commands.waitSeconds(.5)).andThen(Fafnir.setPeakOutput(.8).andThen(Fafnir.setArmP(.7)).andThen(Fafnir.store())));
 
     driverController.button(7).onTrue(outTake.drop().alongWith(index.drop()).alongWith(intake.reverseIntake())).onFalse(outTake.stop().alongWith(index.stop()).alongWith(intake.stop()));
    // driverController.button(8).whileTrue(intake.intake().alongWith(index.outtake())).onFalse(intake.stop().alongWith(index.stop()));
-
+    //Index Test
+    driverController.button(15).onTrue(index.outtake()).onFalse(index.stop());
     //make an amp shoot command eventually
    driverController.button(5).onTrue(Fafnir.store().andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
 //Amp

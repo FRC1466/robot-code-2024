@@ -76,7 +76,6 @@ public class Robot extends TimedRobot
   {
 
 
-         //swerveDrive.updateOdometry();
 
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
@@ -100,7 +99,7 @@ public class Robot extends TimedRobot
   {
     m_robotContainer.backPID();
     m_robotContainer.resetPID();
-    m_robotContainer.lights.setAllianceColor();
+
     
   }
 
@@ -110,6 +109,8 @@ public class Robot extends TimedRobot
   @Override
   public void autonomousInit()
   {
+    
+
     m_robotContainer.setMotorBrake(true);
     m_autonomousCommand = m_robotContainer.getAuto();
     m_robotContainer.Fafnir.store();
@@ -146,6 +147,7 @@ public class Robot extends TimedRobot
   @Override
   public void teleopInit()
   {
+    m_robotContainer.drivebase.photon.setOrigin();
       m_robotContainer.Fafnir.store();
 
     m_robotContainer.setMotorBrake(true);

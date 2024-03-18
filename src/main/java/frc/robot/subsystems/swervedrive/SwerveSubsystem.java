@@ -67,7 +67,7 @@ public class SwerveSubsystem extends SubsystemBase
    */
   
   private final SwerveDrive swerveDrive;
-  private final PhotonCameraWrapper photon = new PhotonCameraWrapper();
+  public final PhotonCameraWrapper photon = new PhotonCameraWrapper();
   private double absoluteXfromSpeaker, absoluteYfromSpeaker, absoluteSqXfromSpeaker, absoluteSqYfromSpeaker,absoluteAddFromSpeaker,absoluteDistFromSpeaker, sqrtOfDist, logOfSqrtofDist;
  //public final DifferentialDrivePoseEstimator m_PoseEstimator;
   /**
@@ -326,8 +326,9 @@ public class SwerveSubsystem extends SubsystemBase
   public double thetaAngle(){
           Pose2d pose = getPose();
           int isBlue = 0;
+      if(DriverStation.isDSAttached()||DriverStation.isFMSAttached()){
     if(DriverStation.getAlliance().get() == Alliance.Blue){
-      absoluteXfromSpeaker = Math.abs(pose.getX() );
+      absoluteXfromSpeaker = Math.abs(pose.getX());
       absoluteYfromSpeaker = Math.abs(pose.getY() - 5.55);
       isBlue = 1;
    }
@@ -360,11 +361,16 @@ public class SwerveSubsystem extends SubsystemBase
     }
     else{
       return logOfSqrtofDist;}
+    }
+    else{
+      return 0;
+    }
   }
   @Override
   public void periodic() {
     if(DriverStation.isTeleop()){
-    var visionEst = photon.getEstimatedGlobalPose(); 
+      swerveDrive.updateOdometry();
+      var visionEst = photon.getEstimatedGlobalPose(); 
  
    visionEst.ifPresent(
             estimatedRoboPose -> {

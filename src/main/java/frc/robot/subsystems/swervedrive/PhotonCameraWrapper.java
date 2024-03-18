@@ -66,12 +66,6 @@ public class PhotonCameraWrapper {
     public PhotonCameraWrapper() {
         camera = new PhotonCamera("Global_Shutter_Camera");
         aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-        if(DriverStation.getAlliance().get() == Alliance.Blue){
-            aprilTagFieldLayout.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
-        }
-        else {
-            aprilTagFieldLayout.setOrigin(OriginPosition.kRedAllianceWallRightSide);
-        }
 
         var kRobotToCam = new Transform3d(Constants.cameraTranslation, Constants.cameraRotation);
         photonEstimator =
@@ -102,6 +96,14 @@ public class PhotonCameraWrapper {
         }*/
     }
 
+    public void setOrigin(){
+             if(DriverStation.getAlliance().get() == Alliance.Blue){
+            aprilTagFieldLayout.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
+        }
+        else {
+            aprilTagFieldLayout.setOrigin(OriginPosition.kRedAllianceWallRightSide);
+        }
+    }
     public PhotonPipelineResult getLatestResult() {
         return camera.getLatestResult();
     }
@@ -161,7 +163,9 @@ public class PhotonCameraWrapper {
         // Increase std devs based on (average) distance
         if (numTags == 1 && avgDist > 4)
             estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
-        else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
+     
+
+          else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
 
         return estStdDevs;
     }
