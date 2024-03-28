@@ -1,0 +1,55 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.7
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopAll"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2 piece auto - top"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.7
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopAll"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

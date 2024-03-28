@@ -19,7 +19,7 @@ public class EndEffector extends SubsystemBase {
   private final LinearFilter currentFilter = LinearFilter.movingAverage(10);
   private double filteredCurrentLeft;
   public double filteredCurrentRight;
-  private double shootVolts =-8;
+  private double shootVolts =-12;
 
 
 

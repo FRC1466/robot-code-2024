@@ -175,7 +175,7 @@ public class Dragonhead extends SubsystemBase{
 
   public Command store() {
     return runOnce(() -> setGoal(storedPosRad))
-       .andThen(Commands.waitSeconds(1)).andThen(runOnce(()->setMotor(0)));
+       .alongWith(Commands.waitSeconds(5)).andThen(runOnce(()->setMotor(0)));
   }
 
   public void setStoreSetpoint() {

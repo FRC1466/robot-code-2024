@@ -97,12 +97,9 @@ public class PhotonCameraWrapper {
     }
 
     public void setOrigin(){
-             if(DriverStation.getAlliance().get() == Alliance.Blue){
+  
             aprilTagFieldLayout.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
-        }
-        else {
-            aprilTagFieldLayout.setOrigin(OriginPosition.kRedAllianceWallRightSide);
-        }
+
     }
     public PhotonPipelineResult getLatestResult() {
         return camera.getLatestResult();

@@ -67,6 +67,7 @@ public class SwerveSubsystem extends SubsystemBase
    */
   
   private final SwerveDrive swerveDrive;
+  private Pigeon2 gryo;
   public final PhotonCameraWrapper photon = new PhotonCameraWrapper();
   private double absoluteXfromSpeaker, absoluteYfromSpeaker, absoluteSqXfromSpeaker, absoluteSqYfromSpeaker,absoluteAddFromSpeaker,absoluteDistFromSpeaker, sqrtOfDist, logOfSqrtofDist;
  //public final DifferentialDrivePoseEstimator m_PoseEstimator;
@@ -112,6 +113,8 @@ public class SwerveSubsystem extends SubsystemBase
     {
       throw new RuntimeException(e);
     }
+    
+    gryo = (Pigeon2)swerveDrive.swerveDriveConfiguration.imu.getIMU();
      
     for(swervelib.SwerveModule m : swerveDrive.getModules()){
       System.out.println("Module Name " + m.configuration.name);
@@ -120,7 +123,9 @@ public class SwerveSubsystem extends SubsystemBase
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
     swerveDrive.setCosineCompensator(!SwerveDriveTelemetry.isSimulation);
     setupPathPlanner();
+    
   }
+
 
   /**
    * Construct the swerve drive.
@@ -131,6 +136,7 @@ public class SwerveSubsystem extends SubsystemBase
   public SwerveSubsystem(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg)
   {
     swerveDrive = new SwerveDrive(driveCfg, controllerCfg, maximumSpeed);
+    
     //photon = new PhotonCameraWrapper();
   }
 
@@ -205,6 +211,9 @@ public class SwerveSubsystem extends SubsystemBase
         0.0, // Goal end velocity in meters/sec
         0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
                                      );
+  }
+  public double getGyroYawDegrees(){
+    return gryo.getAngle();
   }
 
   /**
@@ -333,7 +342,7 @@ public class SwerveSubsystem extends SubsystemBase
       isBlue = 1;
    }
     else {
-      absoluteXfromSpeaker = Math.abs(pose.getX());
+      absoluteXfromSpeaker = Math.abs(pose.getX()- 16.58);
       absoluteYfromSpeaker = Math.abs(pose.getY() - 5.55);
       isBlue = 2;
     }
@@ -368,7 +377,7 @@ public class SwerveSubsystem extends SubsystemBase
   }
   @Override
   public void periodic() {
-    if(DriverStation.isTeleop()){
+{      if(DriverStation.isDSAttached()||DriverStation.isFMSAttached()){}
       swerveDrive.updateOdometry();
       var visionEst = photon.getEstimatedGlobalPose(); 
  

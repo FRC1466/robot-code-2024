@@ -28,6 +28,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.Outtake;
 import frc.robot.commands.AutoMap;
 import frc.robot.commands.SuperStructure;
+import frc.robot.commands.swervedrive.drivebase.AbsoluteFieldDrive;
 import frc.robot.subsystems.Manipulator.BlinkinLights;
 import frc.robot.subsystems.Manipulator.Dragonhead;
 import frc.robot.subsystems.Manipulator.EndEffector;
@@ -120,18 +121,23 @@ public class RobotContainer
     // left stick controls translation
     // right stick controls the angular velocity of the robot
 
-
-              Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
+   /*  AbsoluteFieldDrive drive = new AbsoluteFieldDrive(drivebase,       
         () -> MathUtil.applyDeadband(driverController.getY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(driverController.getX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> MathUtil.applyDeadband(driverController.getZ()*1.15, .1)).withName("Default Drive Command");
+        () -> MathUtil.applyDeadband(driverController.getZ()*1.15, .1));
+*/
+        driveFieldOrientedAnglularVelocity = drivebase.driveCommand(        
+        () -> MathUtil.applyDeadband(driverController.getY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(driverController.getX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> MathUtil.applyDeadband(driverController.getZ()*.85,.1));
         if(autoControl){
                     driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
         () -> MathUtil.applyDeadband(driverController.getY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(driverController.getX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> MathUtil.applyDeadband(driverController.getZ()*.05,.1)).withName("Default Drive Command");
+        () -> MathUtil.applyDeadband(driverController.getZ()*.85,.1)).withName("Default Drive Command");
 
         }
+      
         
       
 
@@ -185,7 +191,7 @@ public void initializeChooser(){
   chooser.addOption("5 Piece Auto", new PathPlannerAuto("Copy of 5 piece Auto"));
   chooser.addOption("2 Piece Top",new PathPlannerAuto("2 piece auto - top"));
   chooser.addOption("3 Piece Auto Far", new PathPlannerAuto("3 piece far bot"));
-  chooser.addOption("2 Piece Center", new PathPlannerAuto("2 piece auto - center"));
+  chooser.addOption("2 Piece Center", new PathPlannerAuto("2 piece auto"));
   chooser.addOption("4 Piece Auto", new PathPlannerAuto("4 Piece Auto"));
   chooser.addOption("Shoot and leave( GOOD LUCK HENRY!! BREAK IT RIDGE!!!)", new PathPlannerAuto("Shoot and back"));
   SmartDashboard.putData("CHOOSE", chooser);
@@ -212,18 +218,36 @@ public Command backPID(){
     // Reset Gyro
     driverController.povDown().onTrue(Commands.runOnce(drivebase::zeroGyro));
     // Shoot Command - Runs up shooter falcons, then feeds them the note.
-    driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(0.5).andThen(index.outtake()))).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
+    driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(0.65).andThen(index.outtake()))).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
     // Raise to Vision Angle
-    driverController.button(8).whileTrue(Fafnir.visionAngle()).onFalse(Fafnir.store());
+    driverController.button(2).whileTrue(Fafnir.visionAngle()).onFalse(Fafnir.store());
     // Intake Command - run intake and indexer motors while the beam break is unbroken
-    driverController.button(10).and(indexBeamBreak).whileTrue(intake.intake().alongWith(index.launch())).onFalse(intake.stop().alongWith(index.stop()));
+    driverController.button(3).and(indexBeamBreak).whileTrue(intake.intake().alongWith(index.launch())).onFalse(intake.stop().alongWith(index.stop()));
      // Amp Command
-    driverController.button(9).onTrue(Fafnir.amp()).onFalse(outTake.ampShoot().andThen(index.outtake()).andThen(Commands.waitSeconds(.5)).andThen(outTake.stop()).andThen(index.stop()).andThen(Fafnir.setArmP(.2)).andThen(Fafnir.setPeakOutput(.2)).andThen(Fafnir.store()).andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
+    driverController.button(4).onTrue(Fafnir.amp()).onFalse(outTake.ampShoot().andThen(index.outtake()).andThen(Commands.waitSeconds(.5)).andThen(outTake.stop()).andThen(index.stop()).andThen(Fafnir.setArmP(.2)).andThen(Fafnir.setPeakOutput(.2)).andThen(Fafnir.store()).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
     // Raise to Podium - raises the arm to the podium position and then places it back in the stored position
     driverController.button(8).onTrue(Fafnir.podium()).onFalse(Fafnir.store());
 
     //climb
 
+
+   /*  driverController
+    .button(7)
+    .whileTrue(
+        new TeleopDrive(
+            drivebase,
+            () ->
+                MathUtil.applyDeadband(
+                    -driverController.getY() * InputLimits.reduced, InputLimits.vxDeadband),
+            () ->
+                MathUtil.applyDeadband(
+                    -driverController.getX() * InputLimits.reduced, InputLimits.vyDeadband),
+            () ->
+                MathUtil.applyDeadband(
+                    -driverController.getZ() * InputLimits.reduced, InputLimits.angDeadband),
+            driverController.button(6).negate(),
+            false,
+            arm.getCOM()));*/
 
 
     driverController.button(6).onTrue(Fafnir.amp()).onFalse(Fafnir.setArmP(.4).andThen(Fafnir.setPeakOutput(.5)).andThen(Fafnir.store()).alongWith(Commands.waitSeconds(.5)).andThen(Fafnir.setPeakOutput(.8).andThen(Fafnir.setArmP(.7)).andThen(Fafnir.store())));
