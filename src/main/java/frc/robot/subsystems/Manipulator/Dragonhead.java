@@ -34,7 +34,7 @@ public class Dragonhead extends SubsystemBase{
   private double armPID_output;
   private double absoluteDistanceFromSpeaker;
   private double visionRadians;
-  private double testRadians = .51;
+  private double testAngle = .51;
   private Rotation2d localSetpoint;
   private DoubleSupplier overrideFeedforward = () -> 0.0;
   private boolean disabled = false;
@@ -93,6 +93,18 @@ public class Dragonhead extends SubsystemBase{
     visionRadians = rad;
   }
 
+  public void raiseTest(){
+  testAngle += .01;}
+  public Command raiseAngle(){
+    return runOnce(() -> raiseTest());
+  }
+  public Command lowerAngle(){
+        return runOnce(() -> lowerTest());
+  }
+
+  
+  public void lowerTest(){
+  testAngle -= .01;}
 
   /** Configure arm motor. */
 
@@ -163,6 +175,10 @@ public class Dragonhead extends SubsystemBase{
 
   public Command visionAngle() {
     return run(() -> setGoal(Rotation2d.fromRadians(visionRadians)))
+      .andThen(holdUntilSetpoint());
+  }
+    public Command testAngle() {
+    return run(() -> setGoal(Rotation2d.fromRadians(testAngle)))
       .andThen(holdUntilSetpoint());
   }
   

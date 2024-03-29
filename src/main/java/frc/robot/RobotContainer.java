@@ -28,6 +28,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.Outtake;
 import frc.robot.commands.AutoMap;
 import frc.robot.commands.SuperStructure;
+import frc.robot.commands.swervedrive.auto.TurnToSpeaker;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteFieldDrive;
 import frc.robot.subsystems.Manipulator.BlinkinLights;
 import frc.robot.subsystems.Manipulator.Dragonhead;
@@ -58,11 +59,15 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private double absoluteDistanceFromSpeaker;
   private double podiumRadians;
+
   private boolean autoControl = false;
   private SendableChooser<Command> chooser = new SendableChooser<>();
    // The robot's subsystems and commands are defined here...
   public final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve"));
+  CommandJoystick driverController = new CommandJoystick(1);
+  CommandJoystick buttonBox = new CommandJoystick(2);
+  private TurnToSpeaker turnControl = new TurnToSpeaker(drivebase, driverController);
                                                                         
   private final EndEffector outTake = new EndEffector();
   private final Intake intake = new Intake();   
@@ -79,7 +84,7 @@ public class RobotContainer
                                                
   // CommandJoystick rotationController = new CommandJoystick(1);
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  CommandJoystick driverController = new CommandJoystick(1);
+
 
 
   // CommandJoystick driverController   = new CommandJoystick(3);//(OperatorConstants.DRIVER_CONTROLLER_PORT);
@@ -126,25 +131,16 @@ public class RobotContainer
         () -> MathUtil.applyDeadband(driverController.getX(), OperatorConstants.LEFT_X_DEADBAND),
         () -> MathUtil.applyDeadband(driverController.getZ()*1.15, .1));
 */
-        driveFieldOrientedAnglularVelocity = drivebase.driveCommand(        
-        () -> MathUtil.applyDeadband(driverController.getY(), OperatorConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(driverController.getX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> MathUtil.applyDeadband(driverController.getZ()*.85,.1));
-        if(autoControl){
-                    driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
-        () -> MathUtil.applyDeadband(driverController.getY(), OperatorConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(driverController.getX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> MathUtil.applyDeadband(driverController.getZ()*.85,.1)).withName("Default Drive Command");
+        
 
-        }
+
       
         
       
 
 
 
-    drivebase.setDefaultCommand(
-        driveFieldOrientedAnglularVelocity);
+    drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
   }
 
   /**
@@ -220,16 +216,29 @@ public Command backPID(){
     // Shoot Command - Runs up shooter falcons, then feeds them the note.
     driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(0.65).andThen(index.outtake()))).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
     // Raise to Vision Angle
-    driverController.button(2).whileTrue(Fafnir.visionAngle()).onFalse(Fafnir.store());
+    driverController.button(2).whileTrue(Fafnir.testAngle()).onFalse(Fafnir.store());
     // Intake Command - run intake and indexer motors while the beam break is unbroken
-    driverController.button(3).and(indexBeamBreak).whileTrue(intake.intake().alongWith(index.launch())).onFalse(intake.stop().alongWith(index.stop()));
+    driverController.button(3).and(indexBeamBreak).whileTrue(Fafnir.setPeakOutput(Constants.DragonheadConstants.dragonPosition.peakOutput).andThen(Fafnir.setArmP(Constants.DragonheadConstants.dragonPosition.P)).andThen(intake.intake()).alongWith(index.launch())).onFalse(intake.stop().alongWith(index.stop()));
      // Amp Command
-    driverController.button(4).onTrue(Fafnir.amp()).onFalse(outTake.ampShoot().andThen(index.outtake()).andThen(Commands.waitSeconds(.5)).andThen(outTake.stop()).andThen(index.stop()).andThen(Fafnir.setArmP(.2)).andThen(Fafnir.setPeakOutput(.2)).andThen(Fafnir.store()).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
+    driverController.button(4).onTrue(Fafnir.setPeakOutput(Constants.DragonheadConstants.dragonPosition.peakOutput).andThen(Fafnir.setArmP(Constants.DragonheadConstants.dragonPosition.P)).andThen(Fafnir.amp())).onFalse(outTake.ampShoot().andThen(index.outtake()).andThen(Commands.waitSeconds(.5)).andThen(outTake.stop()).andThen(index.stop()).andThen(Fafnir.setArmP(.2)).andThen(Fafnir.setPeakOutput(.2)).andThen(Fafnir.store()).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
     // Raise to Podium - raises the arm to the podium position and then places it back in the stored position
     driverController.button(8).onTrue(Fafnir.podium()).onFalse(Fafnir.store());
 
     //climb
-
+    /*driverController.button(14).whileTrue(
+    driveFieldOrientedAnglularVelocity = drivebase.turnAndDrive(        
+        () -> MathUtil.applyDeadband(driverController.getY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(driverController.getX(), OperatorConstants.LEFT_X_DEADBAND))).whileFalse(
+          driveFieldOrientedAnglularVelocity = drivebase.driveCommand(        
+        () -> MathUtil.applyDeadband(driverController.getY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(driverController.getX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> MathUtil.applyDeadband(driverController.getZ()*.85,.1)));*/
+driverController.button(14).whileTrue(
+   turnControl).whileFalse(
+          driveFieldOrientedAnglularVelocity = drivebase.driveCommand(        
+        () -> MathUtil.applyDeadband(driverController.getY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(driverController.getX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> MathUtil.applyDeadband(driverController.getZ()*.85,.1)));
 
    /*  driverController
     .button(7)
@@ -260,7 +269,9 @@ public Command backPID(){
    driverController.button(5).onTrue(Fafnir.store().andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
 //Amp
 
-    
+    buttonBox.button(1).onTrue(Fafnir.raiseAngle());
+    buttonBox.button(2).onTrue(Fafnir.lowerAngle());
+
  
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }

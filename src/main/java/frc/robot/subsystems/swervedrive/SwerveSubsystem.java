@@ -31,6 +31,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -41,6 +42,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
 import frc.robot.Constants.AutonConstants;
+import frc.robot.commands.swervedrive.auto.TurnToSpeaker;
 import frc.robot.subsystems.Manipulator.Dragonhead;
 
 import java.io.File;
@@ -69,7 +71,9 @@ public class SwerveSubsystem extends SubsystemBase
   private final SwerveDrive swerveDrive;
   private Pigeon2 gryo;
   public final PhotonCameraWrapper photon = new PhotonCameraWrapper();
-  private double absoluteXfromSpeaker, absoluteYfromSpeaker, absoluteSqXfromSpeaker, absoluteSqYfromSpeaker,absoluteAddFromSpeaker,absoluteDistFromSpeaker, sqrtOfDist, logOfSqrtofDist;
+
+
+  private double absoluteXfromSpeaker, absoluteYfromSpeaker, absoluteSqXfromSpeaker, absoluteSqYfromSpeaker,absoluteAddFromSpeaker,absoluteDistFromSpeaker, sqrtOfDist, logOfSqrtofDist, angRotation;
  //public final DifferentialDrivePoseEstimator m_PoseEstimator;
   /**
    * Maximum speed of the robot in meters per second, used to limit acceleration.
@@ -272,14 +276,33 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX)
   {
+    
     return run(() -> {
       // Make the robot move
+      
       swerveDrive.drive(new Translation2d(Math.pow(translationX.getAsDouble(), 3) * swerveDrive.getMaximumVelocity(),
                                           Math.pow(translationY.getAsDouble(), 3) * swerveDrive.getMaximumVelocity()),
                         Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumAngularVelocity(),
                         true,
                         false);
     });
+  }
+    public Command turnAndDrive(DoubleSupplier translationX, DoubleSupplier translationY)
+  {
+    return run(() -> {
+      // Make the robot move
+      
+      swerveDrive.drive(new Translation2d(Math.pow(translationX.getAsDouble(), 3) * swerveDrive.getMaximumVelocity(),
+                                          Math.pow(translationY.getAsDouble(), 3) * swerveDrive.getMaximumVelocity()),
+                        Math.pow(angRotation, 3) * swerveDrive.getMaximumAngularVelocity(),
+                        true,
+                        false);
+    });
+  }
+
+  public void setAngularSpeed(double angRotation){
+    this.angRotation = angRotation;
+    SmartDashboard.putNumber("SetAngularSpeed Command Ang Spreed", angRotation);
   }
 
     public Command sysIdDriveMotorCommand()
@@ -353,7 +376,7 @@ public class SwerveSubsystem extends SubsystemBase
     absoluteAddFromSpeaker = absoluteSqXfromSpeaker+absoluteSqYfromSpeaker;
     absoluteDistFromSpeaker = Math.sqrt(absoluteAddFromSpeaker);
     sqrtOfDist = Math.sqrt(absoluteDistFromSpeaker);
-    logOfSqrtofDist = Math.log(sqrtOfDist)-.05;
+    logOfSqrtofDist = Math.log(sqrtOfDist);
       SmartDashboard.putNumber("AbsX", absoluteXfromSpeaker);
       SmartDashboard.putNumber("AbsY", absoluteYfromSpeaker);
        SmartDashboard.putNumber("Abs^2X", absoluteSqXfromSpeaker);
