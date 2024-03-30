@@ -216,7 +216,7 @@ public Command backPID(){
     // Shoot Command - Runs up shooter falcons, then feeds them the note.
     driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(0.65).andThen(index.outtake()))).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
     // Raise to Vision Angle
-    driverController.button(2).whileTrue(Fafnir.testAngle()).onFalse(Fafnir.store());
+    driverController.button(2).whileTrue(Fafnir.visionAngle()).onFalse(Fafnir.store());
     // Intake Command - run intake and indexer motors while the beam break is unbroken
     driverController.button(3).and(indexBeamBreak).whileTrue(Fafnir.setPeakOutput(Constants.DragonheadConstants.dragonPosition.peakOutput).andThen(Fafnir.setArmP(Constants.DragonheadConstants.dragonPosition.P)).andThen(intake.intake()).alongWith(index.launch())).onFalse(intake.stop().alongWith(index.stop()));
      // Amp Command
@@ -271,6 +271,8 @@ driverController.button(14).whileTrue(
 
     buttonBox.button(1).onTrue(Fafnir.raiseAngle());
     buttonBox.button(2).onTrue(Fafnir.lowerAngle());
+    buttonBox.button(4).onTrue(Fafnir.raiseAngleHalf());
+    buttonBox.button(5).onTrue(Fafnir.lowerAngleHalf());
 
  
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));

@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Outtake;
@@ -62,6 +63,8 @@ shootVolts=volts;
   public void periodic() {
     filteredCurrentLeft = currentFilter.calculate(getCurrent(shooterMotorLeft));
     filteredCurrentRight = currentFilter.calculate(getCurrent(shooterMotorRight));
+    SmartDashboard.putNumber("Top Shooter Motor Velocity", shooterMotorLeft.getVelocity().getValueAsDouble()*1.5);
+    SmartDashboard.putNumber("Bottom Shooter Motor Velocity", shooterMotorRight.getVelocity().getValueAsDouble()*1.5);
   }
 
 } 
