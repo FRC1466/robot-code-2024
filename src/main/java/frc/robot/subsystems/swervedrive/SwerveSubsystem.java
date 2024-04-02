@@ -287,6 +287,19 @@ public class SwerveSubsystem extends SubsystemBase
                         false);
     });
   }
+    public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, double angularRotationX)
+  {
+    
+    return run(() -> {
+      // Make the robot move
+      
+      swerveDrive.drive(new Translation2d(Math.pow(translationX.getAsDouble(), 3) * swerveDrive.getMaximumVelocity(),
+                                          Math.pow(translationY.getAsDouble(), 3) * swerveDrive.getMaximumVelocity()),
+                        Math.pow(angularRotationX, 3) * swerveDrive.getMaximumAngularVelocity(),
+                        true,
+                        false);
+    });
+  }
     public Command turnAndDrive(DoubleSupplier translationX, DoubleSupplier translationY)
   {
     return run(() -> {
@@ -355,6 +368,29 @@ public class SwerveSubsystem extends SubsystemBase
   {
     swerveDrive.drive(velocity);
   }
+  public double distFromSpeaker(){
+             Pose2d pose = getPose();
+          int isBlue = 0;
+      if(DriverStation.isDSAttached()||DriverStation.isFMSAttached()){
+    if(DriverStation.getAlliance().get() == Alliance.Blue){
+      absoluteXfromSpeaker = Math.abs(pose.getX());
+      absoluteYfromSpeaker = Math.abs(pose.getY() - 5.55);
+      isBlue = 1;
+   }
+    else {
+      absoluteXfromSpeaker = Math.abs(pose.getX()- 16.58);
+      absoluteYfromSpeaker = Math.abs(pose.getY() - 5.55);
+      isBlue = 2;
+    }
+    SmartDashboard.putNumber("Is Blue", isBlue);
+   
+    absoluteSqXfromSpeaker = Math.pow(absoluteXfromSpeaker, 2);
+    absoluteSqYfromSpeaker = Math.pow(absoluteYfromSpeaker, 2);
+    absoluteAddFromSpeaker = absoluteSqXfromSpeaker+absoluteSqYfromSpeaker;
+    absoluteDistFromSpeaker = Math.sqrt(absoluteAddFromSpeaker);
+  }
+      return absoluteDistFromSpeaker;
+}
   public double thetaAngle(){
           Pose2d pose = getPose();
           int isBlue = 0;
@@ -375,16 +411,20 @@ public class SwerveSubsystem extends SubsystemBase
     absoluteSqYfromSpeaker = Math.pow(absoluteYfromSpeaker, 2);
     absoluteAddFromSpeaker = absoluteSqXfromSpeaker+absoluteSqYfromSpeaker;
     absoluteDistFromSpeaker = Math.sqrt(absoluteAddFromSpeaker);
-    sqrtOfDist = Math.sqrt(absoluteDistFromSpeaker);
-    logOfSqrtofDist = Math.log(sqrtOfDist);
+    if(absoluteDistFromSpeaker < 3.75) {
+      logOfSqrtofDist = -0.0493108*Math.pow(absoluteDistFromSpeaker,4) + .464494*Math.pow(absoluteDistFromSpeaker, 3) + -1.62706*Math.pow(absoluteDistFromSpeaker, 2) + 2.75502*absoluteDistFromSpeaker - 1.58558;
+    SmartDashboard.putNumber("sqrtOfDist", sqrtOfDist);
+    SmartDashboard.putNumber("Log", logOfSqrtofDist);}
+    else{
+      logOfSqrtofDist = .07*absoluteDistFromSpeaker + .345;
+    }
       SmartDashboard.putNumber("AbsX", absoluteXfromSpeaker);
       SmartDashboard.putNumber("AbsY", absoluteYfromSpeaker);
        SmartDashboard.putNumber("Abs^2X", absoluteSqXfromSpeaker);
         SmartDashboard.putNumber("Abs^2Y", absoluteSqYfromSpeaker);
          SmartDashboard.putNumber("absAdd", absoluteAddFromSpeaker);
           SmartDashboard.putNumber("absDist", absoluteDistFromSpeaker);
-           SmartDashboard.putNumber("sqrtOfDist", sqrtOfDist);
-            SmartDashboard.putNumber("Log", logOfSqrtofDist);
+
     if(logOfSqrtofDist> Math.PI/2){
       return Math.PI/2;
     }
@@ -393,7 +433,7 @@ public class SwerveSubsystem extends SubsystemBase
     }
     else{
       return logOfSqrtofDist;}
-    }
+    } 
     else{
       return 0;
     }

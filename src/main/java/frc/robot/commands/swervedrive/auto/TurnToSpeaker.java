@@ -15,7 +15,7 @@ import swervelib.SwerveDrive;
 public class TurnToSpeaker extends Command {
   private final SwerveSubsystem drive;
   private final PIDController controller;
-  private final CommandJoystick driverController;
+
   private static double kP = 0;
   private static double kI = 0;
   private static double kD = 0;
@@ -24,11 +24,10 @@ public class TurnToSpeaker extends Command {
   private DriverStation.Alliance alliance = null;
 
   /** Creates a new TurnToAngle. Turns to the specified rotation. */
-  public TurnToSpeaker(SwerveSubsystem drive, CommandJoystick driverController) {
+  public TurnToSpeaker(SwerveSubsystem drive) {
     addRequirements(drive);
     this.drive = drive;
-    this.driverController = driverController;
-
+    
 
         kP = 0.1;
         kI = 0.0;
@@ -76,10 +75,11 @@ public class TurnToSpeaker extends Command {
       angularSpeed = Math.copySign(minVelocity, angularSpeed);
     }
     drive.setAngularSpeed(angularSpeed);
-    drive.turnAndDrive( () -> MathUtil.applyDeadband(driverController.getY(), Constants.OperatorConstants.LEFT_Y_DEADBAND),
-    () -> MathUtil.applyDeadband(driverController.getX(), Constants.OperatorConstants.LEFT_X_DEADBAND));
+
     
   }
+
+
 
   // Called once the command ends or is interrupted.
   @Override

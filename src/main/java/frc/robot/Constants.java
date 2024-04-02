@@ -44,8 +44,7 @@ public final class Constants
   {
 
     public static final PIDConstants TranslationPID = new PIDConstants(0.7, 0, 0);
-    public static final PIDConstants angleAutoPID   = new PIDConstants(0.3
-    , 0, 0.01);
+    public static final PIDConstants angleAutoPID   = new PIDConstants(0.3, 0, 0.01);
 
     public static final double MAX_ACCELERATION = 2;
   }
@@ -55,7 +54,7 @@ public final class Constants
     public static final int IndexerBeamBreak = 0;
   }
   public static final class VisionConstants{
-      public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(.1, .1, .2);
+      public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(.1, .2, .3);
       public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(.1, .1, .2);
   }
 
@@ -84,7 +83,7 @@ public final class Constants
   public static final class DragonheadConstants{
       public static final int rightArmPort = 19, leftArmPort = 20,
       dutyCyclePort = 1;
-      public static final Gains dragonPosition = new Gains(.835,.0046,0.0035,0.00,0,0.85);
+      public static final Gains dragonPosition = new Gains(.76,.0034,0.0043, 0.01,0,0.85);
       public static final double restRadians = .0;
       public static final double ampRadians = (7*Math.PI/12)+.17;
       public static final double maxRadians = (7*Math.PI/12)+.7;

@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Outtake;
+import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 public class EndEffector extends SubsystemBase {
   private final TalonFX shooterMotorLeft;
@@ -30,7 +31,10 @@ public class EndEffector extends SubsystemBase {
     shooterMotorRight = new TalonFX(Outtake.SHOOTER_ID_RIGHT);
 
   }
-
+public void setBackspinVoltage(double outputVolts){
+  shooterMotorLeft.setVoltage(outputVolts);
+  shooterMotorRight.setVoltage(outputVolts-2);
+}
   public void setVoltage(double outputVoltage){
    shooterMotorLeft.setVoltage(outputVoltage);
    shooterMotorRight.setVoltage(outputVoltage);
@@ -45,8 +49,18 @@ shootVolts=volts;
     return runOnce(() -> setVoltage(1));
   }
 
-  public Command shoot() {
+  public Command shoot(SwerveSubsystem drive) {
+    if(drive.distFromSpeaker() < 3.6){
+    return runOnce(() -> setVoltage(-8));}
+    else{
+    return runOnce(() -> setBackspinVoltage(-8));
+    }
+  }
+public Command shoot() {
     return runOnce(() -> setVoltage(-8));
+  }
+  public Command shootBackspin() {
+    return runOnce(() -> setBackspinVoltage(-8));
   }
 
   public Command intake() {

@@ -67,7 +67,7 @@ public class RobotContainer
                                                                          "swerve"));
   CommandJoystick driverController = new CommandJoystick(1);
   CommandJoystick buttonBox = new CommandJoystick(2);
-  private TurnToSpeaker turnControl = new TurnToSpeaker(drivebase, driverController);
+
                                                                         
   private final EndEffector outTake = new EndEffector();
   private final Intake intake = new Intake();   
@@ -99,8 +99,8 @@ public class RobotContainer
     // Configure the trigger bindings
    
     NamedCommands.registerCommand("Intake", index.launch().alongWith(intake.intake()).alongWith(Commands.waitSeconds(2.5)).andThen(intake.stop()).andThen(index.stop()));
-    NamedCommands.registerCommand("Shoot", outTake.shoot().alongWith(Commands.waitSeconds(.3)).andThen(index.outtake()));
-    NamedCommands.registerCommand("Raise Arm To Vision",Fafnir.visionAngle() );
+    NamedCommands.registerCommand("Shoot", outTake.shoot().andThen(index.outtake()));
+    NamedCommands.registerCommand("Raise Arm To Vision",Fafnir.visionAngle());
     
     // Fafnir.visionAngle());
   
@@ -214,7 +214,11 @@ public Command backPID(){
     // Reset Gyro
     driverController.povDown().onTrue(Commands.runOnce(drivebase::zeroGyro));
     // Shoot Command - Runs up shooter falcons, then feeds them the note.
+
+   
+
     driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(0.65).andThen(index.outtake()))).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
+    
     // Raise to Vision Angle
     driverController.button(2).whileTrue(Fafnir.visionAngle()).onFalse(Fafnir.store());
     // Intake Command - run intake and indexer motors while the beam break is unbroken
@@ -233,8 +237,7 @@ public Command backPID(){
         () -> MathUtil.applyDeadband(driverController.getY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(driverController.getX(), OperatorConstants.LEFT_X_DEADBAND),
         () -> MathUtil.applyDeadband(driverController.getZ()*.85,.1)));*/
-driverController.button(14).whileTrue(
-   turnControl).whileFalse(
+driverController.button(14).whileFalse(
           driveFieldOrientedAnglularVelocity = drivebase.driveCommand(        
         () -> MathUtil.applyDeadband(driverController.getY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(driverController.getX(), OperatorConstants.LEFT_X_DEADBAND),
