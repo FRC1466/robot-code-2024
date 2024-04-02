@@ -99,7 +99,7 @@ public class RobotContainer
     // Configure the trigger bindings
    
     NamedCommands.registerCommand("Intake", index.launch().alongWith(intake.intake()).alongWith(Commands.waitSeconds(2.5)).andThen(intake.stop()).andThen(index.stop()));
-    NamedCommands.registerCommand("Shoot", outTake.shoot().andThen(index.outtake()));
+    NamedCommands.registerCommand("Shoot", outTake.autoShoot().alongWith(Commands.waitSeconds(.4)).andThen(index.outtake()));
     NamedCommands.registerCommand("Raise Arm To Vision",Fafnir.visionAngle());
     
     // Fafnir.visionAngle());

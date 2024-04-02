@@ -59,6 +59,9 @@ shootVolts=volts;
 public Command shoot() {
     return runOnce(() -> setVoltage(-8));
   }
+  public Command autoShoot() {
+    return runOnce(() -> setVoltage(-5.5));
+  }
   public Command shootBackspin() {
     return runOnce(() -> setBackspinVoltage(-8));
   }
