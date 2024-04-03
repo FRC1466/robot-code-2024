@@ -188,6 +188,7 @@ public void initializeChooser(){
   chooser.addOption("2 Piece Top",new PathPlannerAuto("2 piece auto - top"));
   chooser.addOption("3 Piece Auto Far", new PathPlannerAuto("3 piece far bot"));
   chooser.addOption("2 Piece Center", new PathPlannerAuto("2 piece auto"));
+  chooser.addOption("3 Piece Auto with Amp", new PathPlannerAuto("3 Piece Auto with Amp"));
   chooser.addOption("4 Piece Auto", new PathPlannerAuto("4 Piece Auto"));
   chooser.addOption("Shoot and leave( GOOD LUCK HENRY!! BREAK IT RIDGE!!!)", new PathPlannerAuto("Shoot and back"));
   SmartDashboard.putData("CHOOSE", chooser);
