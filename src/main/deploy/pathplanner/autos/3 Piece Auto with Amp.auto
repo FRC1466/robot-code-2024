@@ -56,9 +56,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "Lower Arm"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.4
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lower Arm"
+                }
+              }
+            ]
           }
         },
         {
@@ -112,27 +125,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Lower Arm"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Middle Note from Front Speaker"
-          }
-        },
-        {
-          "type": "sequential",
+          "type": "deadline",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Shoot"
-                }
-              },
               {
                 "type": "wait",
                 "data": {
@@ -142,7 +137,76 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "StopAll"
+                  "name": "Lower Arm"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Middle Note from Front Speaker"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.4
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Shoot"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.6
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "StopAll"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Raise Arm To Vision"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.4
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lower Arm"
                 }
               }
             ]
@@ -152,18 +216,6 @@
           "type": "path",
           "data": {
             "pathName": "4 piece top SMR"
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": []
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": []
           }
         }
       ]
