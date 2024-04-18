@@ -3,59 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7158327706968803,
-        "y": 6.794303731057604
+        "x": 2.76,
+        "y": 6.79
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8338667594467737,
-        "y": 6.794303731057604
+        "x": 1.8150832882862347,
+        "y": 6.958021893251764
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.5401208637175103,
-        "y": 6.993104356579084
+        "x": 2.4699559370628714,
+        "y": 5.566417514601411
       },
       "prevControl": {
-        "x": 1.0194302311429555,
-        "y": 6.993104356579084
-      },
-      "nextControl": {
-        "x": 4.060811496292065,
-        "y": 6.993104356579084
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 0.973104168430559,
-        "y": 6.677362186633205
-      },
-      "prevControl": {
-        "x": 0.1771393071562819,
-        "y": 6.677362186633205
+        "x": 1.8501657516135543,
+        "y": 5.391005197964812
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1.0,
-      "rotationDegrees": 0,
-      "rotateFast": true
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.85,
+      "waypointRelativePos": 0.65,
       "command": {
         "type": "sequential",
         "data": {
@@ -72,20 +50,20 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 3.5,
     "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 540.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -118.0,
+    "rotation": -60.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": -118.0,
+    "rotation": -30.0,
     "velocity": 0
   },
   "useDefaultConstraints": true
