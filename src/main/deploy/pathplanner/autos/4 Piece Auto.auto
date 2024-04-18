@@ -22,7 +22,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.6
+                        "waitTime": 0.4
                       }
                     },
                     {
@@ -215,7 +215,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "4 piece top - RCR"
+            "pathName": "4 Piece Top Mag"
           }
         },
         {

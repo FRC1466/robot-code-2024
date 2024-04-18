@@ -17,7 +17,7 @@ public class Intake extends SubsystemBase {
   private final TalonFX intakeMotor;
   private final LinearFilter currentFilter = LinearFilter.movingAverage(10);
   private double filteredCurrent;
-  private double intakeVolts = 3;
+
 
 
   /** Create a new Gripper subsystem. */
@@ -37,7 +37,7 @@ public class Intake extends SubsystemBase {
   }
 
   public Command intake() {
-    return runOnce(() -> setVoltage(-intakeVolts));
+    return runOnce(() -> setVoltage(-5));
   }
 
 

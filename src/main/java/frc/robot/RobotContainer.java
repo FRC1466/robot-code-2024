@@ -66,7 +66,7 @@ public class RobotContainer
   public final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve"));
   CommandJoystick driverController = new CommandJoystick(1);
- // CommandJoystick buttonBox = new CommandJoystick(2);
+  CommandJoystick buttonBox = new CommandJoystick(2);
 
                                                                         
   private final EndEffector outTake = new EndEffector();
@@ -99,7 +99,6 @@ public class RobotContainer
     // Configure the trigger bindings
    
     NamedCommands.registerCommand("Intake", index.launch().alongWith(intake.intake()).alongWith(Commands.waitSeconds(2.5)).andThen(intake.stop()).andThen(index.stop()));
-    NamedCommands.registerCommand("Outtake", outTake.drop().alongWith(index.drop()).alongWith(intake.reverseIntake()).alongWith(Commands.waitSeconds(.4)).andThen(outTake.stop().alongWith(index.stop()).alongWith(intake.stop())));
     NamedCommands.registerCommand("Shoot", outTake.autoShoot().alongWith(Commands.waitSeconds(.6)).andThen(index.outtake()));
     NamedCommands.registerCommand("Raise Arm To Vision",Fafnir.visionAngle());
     
@@ -191,9 +190,7 @@ public void initializeChooser(){
   chooser.addOption("2 Piece Center", new PathPlannerAuto("2 piece auto"));
   chooser.addOption("3 Piece Auto with Amp", new PathPlannerAuto("3 Piece Auto with Amp"));
   chooser.addOption("4 Piece Auto", new PathPlannerAuto("4 Piece Auto"));
-  chooser.addOption("Test for 5 Piece -Do Not Run", new PathPlannerAuto("Test for 5 Piece -Do Not Run"));
   chooser.addOption("Shoot and leave( GOOD LUCK HENRY!! BREAK IT RIDGE!!!)", new PathPlannerAuto("Shoot and back"));
-  chooser.addOption("Just Shoot(Manifest 4)", new PathPlannerAuto("just shoot"));
   SmartDashboard.putData("CHOOSE", chooser);
 }
 public void resetPID(){
@@ -221,18 +218,16 @@ public Command backPID(){
 
    
 
-    driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(0.8)).andThen(index.outtake())).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
+    driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(0.65).andThen(index.outtake()))).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
     
     // Raise to Vision Angle
     driverController.button(2).whileTrue(Fafnir.visionAngle()).onFalse(Fafnir.store());
     // Intake Command - run intake and indexer motors while the beam break is unbroken
     driverController.button(3).and(indexBeamBreak).whileTrue(Fafnir.setPeakOutput(Constants.DragonheadConstants.dragonPosition.peakOutput).andThen(Fafnir.setArmP(Constants.DragonheadConstants.dragonPosition.P)).andThen(intake.intake()).alongWith(index.launch())).onFalse(intake.stop().alongWith(index.stop()));
      // Amp Command
-    driverController.button(1).whileTrue(Fafnir.visionAngle()).onFalse(Fafnir.store());
-   driverController.button(4).onTrue(Fafnir.setPeakOutput(Constants.DragonheadConstants.dragonPosition.peakOutput).andThen(Fafnir.setArmP(Constants.DragonheadConstants.dragonPosition.P)).andThen(Fafnir.amp())).onFalse(outTake.ampShoot().andThen(index.outtake()).andThen(Commands.waitSeconds(.5)).andThen(outTake.stop()).andThen(index.stop()).andThen(Fafnir.setArmP(.2)).andThen(Fafnir.setPeakOutput(.2)).andThen(Fafnir.store()).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
+    driverController.button(4).onTrue(Fafnir.setPeakOutput(Constants.DragonheadConstants.dragonPosition.peakOutput).andThen(Fafnir.setArmP(Constants.DragonheadConstants.dragonPosition.P)).andThen(Fafnir.amp())).onFalse(outTake.ampShoot().andThen(index.outtake()).andThen(Commands.waitSeconds(.5)).andThen(outTake.stop()).andThen(index.stop()).andThen(Fafnir.setArmP(.2)).andThen(Fafnir.setPeakOutput(.2)).andThen(Fafnir.store()).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
     // Raise to Podium - raises the arm to the podium position and then places it back in the stored position
-    driverController.button(8).onTrue(Fafnir.podium()).onFalse(outTake.shoot().alongWith(Commands.waitSeconds(0.8)).andThen(index.outtake()).alongWith(Commands.waitSeconds(1)).andThen(index.stop()).andThen(outTake.stop()).andThen(Fafnir.store()));
-  //.alongWith(intake.stop()));
+    driverController.button(8).onTrue(Fafnir.podium()).onFalse(Fafnir.store());
 
     //climb
     /*driverController.button(14).whileTrue(
@@ -268,9 +263,7 @@ driverController.button(14).whileFalse(
             arm.getCOM()));*/
 
 
-
-
-    driverController.button(6).onTrue(Fafnir.setPeakOutput(Constants.DragonheadConstants.dragonPosition.peakOutput).andThen(Fafnir.setArmP(Constants.DragonheadConstants.dragonPosition.P)).andThen(Fafnir.amp())).onFalse(Fafnir.setArmP(.4).andThen(Fafnir.setPeakOutput(.5)).andThen(Fafnir.store()).alongWith(Commands.waitSeconds(.5)).andThen(Fafnir.setPeakOutput(.8).andThen(Fafnir.setArmP(.7)).andThen(Fafnir.store())));
+    driverController.button(6).onTrue(Fafnir.amp()).onFalse(Fafnir.setArmP(.4).andThen(Fafnir.setPeakOutput(.5)).andThen(Fafnir.store()).alongWith(Commands.waitSeconds(.5)).andThen(Fafnir.setPeakOutput(.8).andThen(Fafnir.setArmP(.7)).andThen(Fafnir.store())));
 
     driverController.button(7).onTrue(outTake.drop().alongWith(index.drop()).alongWith(intake.reverseIntake())).onFalse(outTake.stop().alongWith(index.stop()).alongWith(intake.stop()));
    // driverController.button(8).whileTrue(intake.intake().alongWith(index.outtake())).onFalse(intake.stop().alongWith(index.stop()));
@@ -279,12 +272,12 @@ driverController.button(14).whileFalse(
     //make an amp shoot command eventually
    driverController.button(5).onTrue(Fafnir.store().andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
 //Amp
-/* Button Box Commented Out 
+
     buttonBox.button(1).onTrue(Fafnir.raiseAngle());
     buttonBox.button(2).onTrue(Fafnir.lowerAngle());
     buttonBox.button(4).onTrue(Fafnir.raiseAngleHalf());
     buttonBox.button(5).onTrue(Fafnir.lowerAngleHalf());
-*/
+
  
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }
