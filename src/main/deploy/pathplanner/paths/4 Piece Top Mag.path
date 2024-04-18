@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 2.9260279603180286,
-        "y": 6.993104356579084
+        "x": 3.1716052036092677,
+        "y": 7.191904982100564
       },
       "prevControl": {
-        "x": 2.247767002656513,
-        "y": 6.501949869996606
+        "x": 2.493344245947752,
+        "y": 6.700750495518085
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,7 +39,7 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.75,
+      "waypointRelativePos": 0.8,
       "command": {
         "type": "sequential",
         "data": {
@@ -53,11 +53,85 @@
           ]
         }
       }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "deadline",
+              "data": {
+                "commands": [
+                  {
+                    "type": "sequential",
+                    "data": {
+                      "commands": [
+                        {
+                          "type": "wait",
+                          "data": {
+                            "waitTime": 0.3
+                          }
+                        },
+                        {
+                          "type": "named",
+                          "data": {
+                            "name": "Shoot"
+                          }
+                        },
+                        {
+                          "type": "wait",
+                          "data": {
+                            "waitTime": 0.4
+                          }
+                        },
+                        {
+                          "type": "named",
+                          "data": {
+                            "name": "StopAll"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "Raise Arm To Vision"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "deadline",
+              "data": {
+                "commands": [
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 0.3
+                    }
+                  },
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "Lower Arm"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 2.5,
+    "maxAcceleration": 1.9,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 540.0
   },
@@ -72,5 +146,5 @@
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
