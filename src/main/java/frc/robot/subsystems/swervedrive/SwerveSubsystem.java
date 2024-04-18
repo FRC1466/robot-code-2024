@@ -322,7 +322,7 @@ public class SwerveSubsystem extends SubsystemBase
   }
   public double thetaAngle(){
           Pose2d pose = getPose();
-    absoluteXfromSpeaker = pose.getX() + .04;
+    absoluteXfromSpeaker = pose.getX();
     absoluteYfromSpeaker = Math.abs(pose.getY() - 5.55);
     absoluteSqXfromSpeaker = Math.pow(absoluteXfromSpeaker, 2);
     absoluteSqYfromSpeaker = Math.pow(absoluteYfromSpeaker, 2);
