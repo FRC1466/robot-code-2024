@@ -453,7 +453,18 @@ public class SwerveSubsystem extends SubsystemBase
                 new Pose2d(new Translation2d(estimatedRoboPose.estimatedPose.toPose2d().getX(), estimatedRoboPose.estimatedPose.toPose2d().getY()), getPose().getRotation()), estimatedRoboPose.timestampSeconds, estStdDevs);
             });
             String table = "Drive/";
+            for(int i = 0; i<photon.getLatestResult().targets.size(); i++){
+            if(photon.getLatestResult().targets.get(i).getFiducialId() == 7){
+                headingParallelOffset = 
+                thetaToSpeaker = photon.getLatestResult().targets.get(i).getYaw();
+                alphaToSpeaker = 
+            }
+        }
+      
       Pose2d pose = getPose();
+      
+      SmartDashboard.putNumber(table + "Theta (Z)", setHeadingCorrection);
+      SmartDashboard.putString(table + "Tag Test", photon.getLatestResult().getTargets().toString());
 
       SmartDashboard.putNumber(table + "X", pose.getX());
       SmartDashboard.putNumber(table + "Y", pose.getY());
