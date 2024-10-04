@@ -86,7 +86,7 @@ public final class Constants
       public static final int rightArmPort = 19, leftArmPort = 20,
       dutyCyclePort = 1;
       public static final Gains dragonPosition = new Gains(.76,.0034,0.0043, 0.01,0,0.85);
-      public static final double restRadians = .0;
+      public static final double restRadians = .1;
       public static final double ampRadians = (7*Math.PI/12)+.17;
       public static final double maxRadians = (7*Math.PI/12)+.7;
       public static final double podiumRadians = .485;//not podium, just

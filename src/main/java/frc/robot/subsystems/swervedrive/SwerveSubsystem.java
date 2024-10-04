@@ -71,6 +71,10 @@ public class SwerveSubsystem extends SubsystemBase
   private final SwerveDrive swerveDrive;
   private Pigeon2 gryo;
   public final PhotonCameraWrapper photon = new PhotonCameraWrapper();
+  public double alphaToSpeaker,thetaToSpeaker,setHeadingCorrection;
+  public boolean canSee7;
+  public double X_add = 0;
+  public double Y_add = 5.55;
 
 
   private double absoluteXfromSpeaker, absoluteYfromSpeaker, absoluteSqXfromSpeaker, absoluteSqYfromSpeaker,absoluteAddFromSpeaker,absoluteDistFromSpeaker, sqrtOfDist, logOfSqrtofDist, angRotation;
@@ -453,15 +457,37 @@ public class SwerveSubsystem extends SubsystemBase
                 new Pose2d(new Translation2d(estimatedRoboPose.estimatedPose.toPose2d().getX(), estimatedRoboPose.estimatedPose.toPose2d().getY()), getPose().getRotation()), estimatedRoboPose.timestampSeconds, estStdDevs);
             });
             String table = "Drive/";
-            for(int i = 0; i<photon.getLatestResult().targets.size(); i++){
-            if(photon.getLatestResult().targets.get(i).getFiducialId() == 7){
-                headingParallelOffset = 
-                thetaToSpeaker = photon.getLatestResult().targets.get(i).getYaw();
-                alphaToSpeaker = 
+            Pose2d pose = getPose();
+            if(DriverStation.getAlliance().get() == Alliance.Blue){
+              X_add = 0; 
+              
             }
+            else{
+              X_add = 16.58;
+            }
+            for(int i = 0; i<photon.getLatestResult().targets.size(); i++){
+              if(photon.getLatestResult().targets.get(i).getFiducialId() == 7){
+                thetaToSpeaker = photon.getLatestResult().targets.get(i).getYaw();
+                SmartDashboard.putNumber("thetaToSpeaker",thetaToSpeaker);
+                alphaToSpeaker = Math.atan(Math.abs(pose.getX()-X_add)/(pose.getY()-Y_add))*(180/Math.PI);
+                if(alphaToSpeaker >= 0){
+                  alphaToSpeaker = 90- alphaToSpeaker;
+                }
+                else if(alphaToSpeaker < 0){
+                  alphaToSpeaker = -(90+ alphaToSpeaker);
+                }
+                SmartDashboard.putNumber("alphaToSpeaker", alphaToSpeaker);
+                setHeadingCorrection = thetaToSpeaker-alphaToSpeaker;
+                SmartDashboard.putNumber("setHeadingCzorrectionInitial", setHeadingCorrection);
+                setHeadingCorrection = setHeadingCorrection-pose.getRotation().getDegrees();
+                SmartDashboard.putNumber("setHeadingCorrectionFinal", setHeadingCorrection);
+
+                canSee7 = true;
+                }
         }
+     
       
-      Pose2d pose = getPose();
+      pose = getPose();
       
       SmartDashboard.putNumber(table + "Theta (Z)", setHeadingCorrection);
       SmartDashboard.putString(table + "Tag Test", photon.getLatestResult().getTargets().toString());
