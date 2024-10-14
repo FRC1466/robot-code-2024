@@ -221,7 +221,7 @@ public Command backPID(){
 
    
 
-    driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(0.8)).andThen(index.outtake())).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
+    driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(2.8)).andThen(index.outtake())).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
     
     // Raise to Vision Angle
     driverController.button(2).whileTrue(Fafnir.visionAngle()).onFalse(Fafnir.store());
