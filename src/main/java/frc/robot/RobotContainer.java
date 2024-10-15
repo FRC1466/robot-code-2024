@@ -66,7 +66,7 @@ public class RobotContainer
   public final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve"));
   CommandJoystick driverController = new CommandJoystick(1);
- // CommandJoystick buttonBox = new CommandJoystick(2);
+  CommandJoystick buttonBox = new CommandJoystick(2);
 
                                                                         
   private final EndEffector outTake = new EndEffector();
@@ -228,7 +228,9 @@ public Command backPID(){
     // Intake Command - run intake and indexer motors while the beam break is unbroken
     driverController.button(3).and(indexBeamBreak).whileTrue(Fafnir.setPeakOutput(Constants.DragonheadConstants.dragonPosition.peakOutput).andThen(Fafnir.setArmP(Constants.DragonheadConstants.dragonPosition.P)).andThen(intake.intake()).alongWith(index.launch())).onFalse(intake.stop().alongWith(index.stop()));
      // Amp Command
-    driverController.button(1).whileTrue(Fafnir.visionAngle()).onFalse(Fafnir.store());
+    //driverController.button(1).whileTrue(Fafnir.visionAngle()).onFalse(Fafnir.store());
+    driverController.button(1).whileTrue(Fafnir.testAngle()).onFalse(Fafnir.store());
+
    driverController.button(4).onTrue(Fafnir.setPeakOutput(Constants.DragonheadConstants.dragonPosition.peakOutput).andThen(Fafnir.setArmP(Constants.DragonheadConstants.dragonPosition.P)).andThen(Fafnir.amp())).onFalse(outTake.ampShoot().andThen(index.outtake()).andThen(Commands.waitSeconds(.5)).andThen(outTake.stop()).andThen(index.stop()).andThen(Fafnir.setArmP(.2)).andThen(Fafnir.setPeakOutput(.2)).andThen(Fafnir.store()).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
     // Raise to Podium - raises the arm to the podium position and then places it back in the stored position
     driverController.button(8).onTrue(Fafnir.podium()).onFalse(outTake.shoot().alongWith(Commands.waitSeconds(0.8)).andThen(index.outtake()).alongWith(Commands.waitSeconds(1)).andThen(index.stop()).andThen(outTake.stop()).andThen(Fafnir.store()));
@@ -279,12 +281,12 @@ driverController.button(14).whileFalse(
     //make an amp shoot command eventually
    driverController.button(5).onTrue(Fafnir.store().andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
 //Amp
-/* Button Box Commented Out 
+// Button Box Commented Out 
     buttonBox.button(1).onTrue(Fafnir.raiseAngle());
     buttonBox.button(2).onTrue(Fafnir.lowerAngle());
     buttonBox.button(4).onTrue(Fafnir.raiseAngleHalf());
     buttonBox.button(5).onTrue(Fafnir.lowerAngleHalf());
-*/
+
  
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }
