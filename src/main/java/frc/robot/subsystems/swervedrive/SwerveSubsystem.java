@@ -415,7 +415,7 @@ public class SwerveSubsystem extends SubsystemBase
     absoluteDistFromSpeaker = Math.sqrt(absoluteAddFromSpeaker);
     if(absoluteDistFromSpeaker < 3.75) {
       logOfSqrtofDist = -0.0493108*Math.pow(absoluteDistFromSpeaker,4) + .464494*Math.pow(absoluteDistFromSpeaker, 3) + -1.62706*Math.pow(absoluteDistFromSpeaker, 2) + 2.75502*absoluteDistFromSpeaker - 1.58558;
-    SmartDashboard.putNumber("sqrtOfDist", sqrtOfDist);
+
     SmartDashboard.putNumber("Log", logOfSqrtofDist);}
     else{
       logOfSqrtofDist = .07*absoluteDistFromSpeaker + .345;
@@ -445,7 +445,6 @@ public class SwerveSubsystem extends SubsystemBase
 {      if(DriverStation.isDSAttached()||DriverStation.isFMSAttached()){}
       swerveDrive.updateOdometry();
       var visionEst = photon.getEstimatedGlobalPose(); 
- 
    visionEst.ifPresent(
             estimatedRoboPose -> {
                             

@@ -86,12 +86,12 @@ public final class Constants
       public static final int rightArmPort = 19, leftArmPort = 20,
       dutyCyclePort = 1;
       public static final Gains dragonPosition = new Gains(.84,.025,0.01, 0.01,0,1);
-      public static final double restRadians = .1;
+      public static final double restRadians = 0;
       public static final double ampRadians = (7*Math.PI/12)+.17;
       public static final double maxRadians = (7*Math.PI/12)+.7;
       public static final double podiumRadians = .485;//not podium, just
       public static final double gravityFF = 0.02;
-      public static final double absolutePositionOffset = -.6599;
+      public static final double absolutePositionOffset = -.6329; // arm rests and -.1 radians
       public static final boolean encoderInverted = false;
       public static final double dutyCycleResolution = 1.0;
       public static final class DragonConfig {

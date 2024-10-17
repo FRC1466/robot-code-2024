@@ -66,7 +66,7 @@ public class RobotContainer
   public final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve"));
   CommandJoystick driverController = new CommandJoystick(1);
-  CommandJoystick buttonBox = new CommandJoystick(2);
+  //CommandJoystick buttonBox = new CommandJoystick(2);
 
                                                                         
   private final EndEffector outTake = new EndEffector();
@@ -221,15 +221,15 @@ public Command backPID(){
 
    
 
-    driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(2.8)).andThen(index.outtake())).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
+    driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(.8)).andThen(index.outtake())).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
     
     // Raise to Vision Angle
     driverController.button(2).whileTrue(Fafnir.visionAngle()).onFalse(Fafnir.store());
     // Intake Command - run intake and indexer motors while the beam break is unbroken
     driverController.button(3).and(indexBeamBreak).whileTrue(Fafnir.setPeakOutput(Constants.DragonheadConstants.dragonPosition.peakOutput).andThen(Fafnir.setArmP(Constants.DragonheadConstants.dragonPosition.P)).andThen(intake.intake()).alongWith(index.launch())).onFalse(intake.stop().alongWith(index.stop()));
      // Amp Command
-    //driverController.button(1).whileTrue(Fafnir.visionAngle()).onFalse(Fafnir.store());
-    driverController.button(1).whileTrue(Fafnir.testAngle()).onFalse(Fafnir.store());
+    driverController.button(1).whileTrue(Fafnir.visionAngle()).onFalse(Fafnir.store());
+   // driverController.button(1).whileTrue(Fafnir.testAngle()).onFalse(Fafnir.store());
 
    driverController.button(4).onTrue(Fafnir.setPeakOutput(Constants.DragonheadConstants.dragonPosition.peakOutput).andThen(Fafnir.setArmP(Constants.DragonheadConstants.dragonPosition.P)).andThen(Fafnir.amp())).onFalse(outTake.ampShoot().andThen(index.outtake()).andThen(Commands.waitSeconds(.5)).andThen(outTake.stop()).andThen(index.stop()).andThen(Fafnir.setArmP(.2)).andThen(Fafnir.setPeakOutput(.2)).andThen(Fafnir.store()).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
     // Raise to Podium - raises the arm to the podium position and then places it back in the stored position
