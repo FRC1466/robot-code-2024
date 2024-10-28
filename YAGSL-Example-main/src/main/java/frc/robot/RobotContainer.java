@@ -35,7 +35,7 @@ public class RobotContainer
 {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-   final CommandJoystick CommandFlightstick = new CommandJoystick(0);
+   final CommandXboxController CommandXboxController = new CommandXboxController(0);
   
   // The robot's subsystems and commands are defined here..
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
@@ -70,9 +70,9 @@ public class RobotContainer
     // left stick controls translation
     // right stick controls the angular velocity of the robot
     Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
-        () -> MathUtil.applyDeadband(CommandFlightstick.getY(), OperatorConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(CommandFlightstick.getX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> MathUtil.applyDeadband(CommandFlightstick.getZ() * 0.9, .1));
+        () -> MathUtil.applyDeadband(CommandXboxController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(CommandXboxController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> MathUtil.applyDeadband(CommandXboxController.getRightX() * 0.9, .1));
    // Command driveStation = drivebase.driveCommand(null, null, null)
 
 
@@ -91,7 +91,7 @@ public class RobotContainer
   private void configureBindings()
   {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    CommandFlightstick.povDown().onTrue(Commands.runOnce(drivebase::zeroGyro));
+    CommandXboxController.a().onTrue(Commands.runOnce(drivebase::zeroGyro));
     // CommandFlighstick.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
   }
 
