@@ -51,6 +51,8 @@ public class Robot extends TimedRobot
     // Create a timer to disable motor brake a few seconds after disable.  This will let the robot stop
     // immediately when disabled, but then also let it be pushed more 
     disabledTimer = new Timer();
+
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
   }
 
   /**
@@ -95,17 +97,11 @@ public class Robot extends TimedRobot
    * This autonomous runs the autonomous command selected by your {@link RobotContainer} class.
    */
   @Override
-  public void autonomousInit()
-  {
-    m_robotContainer.setMotorBrake(true);
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null)
-    {
-      m_autonomousCommand.schedule();
-    }
-  }
+  public void autonomousInit() {
+    
+    // Schedule the autonomous command
+    CommandScheduler.getInstance().schedule(m_autonomousCommand);
+}
 
   /**
    * This function is called periodically during autonomous.
