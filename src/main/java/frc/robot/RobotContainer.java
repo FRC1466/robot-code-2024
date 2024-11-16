@@ -66,6 +66,7 @@ public class RobotContainer
   public final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve"));
   CommandJoystick driverController = new CommandJoystick(1);
+  CommandXboxController driverXbox = new CommandXboxController(0);
   //CommandJoystick buttonBox = new CommandJoystick(2);
 
                                                                         
@@ -220,7 +221,7 @@ public Command backPID(){
     // Shoot Command - Runs up shooter falcons, then feeds them the note.
 
    
-
+    driverXbox.povDown().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(.8)).andThen(index.outtake())).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
     
     // Raise to Vision Angle
@@ -247,9 +248,9 @@ public Command backPID(){
         () -> MathUtil.applyDeadband(driverController.getZ()*.85,.1)));*/
 driverController.button(14).whileFalse(
           driveFieldOrientedAnglularVelocity = drivebase.driveCommand(        
-        () -> MathUtil.applyDeadband(driverController.getY(), OperatorConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(driverController.getX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> MathUtil.applyDeadband(driverController.getZ()*.85,.1)));
+        () -> MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> MathUtil.applyDeadband(driverXbox.getRightX()*.85,.1)));
 
    /*  driverController
     .button(7)
@@ -282,10 +283,7 @@ driverController.button(14).whileFalse(
    driverController.button(5).onTrue(Fafnir.store().andThen(Fafnir.setArmP(DragonheadConstants.dragonPosition.P)).andThen(Fafnir.setPeakOutput(DragonheadConstants.dragonPosition.peakOutput)));
 //Amp
 // Button Box Commented Out 
-    buttonBox.button(1).onTrue(Fafnir.raiseAngle());
-    buttonBox.button(2).onTrue(Fafnir.lowerAngle());
-    buttonBox.button(4).onTrue(Fafnir.raiseAngleHalf());
-    buttonBox.button(5).onTrue(Fafnir.lowerAngleHalf());
+
 
  
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
