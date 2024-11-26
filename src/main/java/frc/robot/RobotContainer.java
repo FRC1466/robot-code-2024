@@ -221,7 +221,7 @@ public Command backPID(){
     // Shoot Command - Runs up shooter falcons, then feeds them the note.
 
    
-    driverXbox.povDown().onTrue(Commands.runOnce(drivebase::zeroGyro));
+    driverController.povDown().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverController.button(1).whileTrue(outTake.shoot().alongWith(Commands.waitSeconds(.8)).andThen(index.outtake())).onFalse(index.stop().alongWith(outTake.stop()).alongWith(intake.stop()));
     
     // Raise to Vision Angle
@@ -248,9 +248,9 @@ public Command backPID(){
         () -> MathUtil.applyDeadband(driverController.getZ()*.85,.1)));*/
 driverController.button(14).whileFalse(
           driveFieldOrientedAnglularVelocity = drivebase.driveCommand(        
-        () -> MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> MathUtil.applyDeadband(driverXbox.getRightX()*.85,.1)));
+        () -> MathUtil.applyDeadband(driverController.getY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(driverController.getX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> MathUtil.applyDeadband(driverController.getZ()*.85,.1)));
 
    /*  driverController
     .button(7)
